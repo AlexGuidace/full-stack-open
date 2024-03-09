@@ -5,16 +5,18 @@ const Header = ({ course }) => {
 const Content = ({ content }) => {
   return (
     <>
-      <p>
-        {content[0].partTitle} {content[0].exercises}
-      </p>
-      <p>
-        {content[1].partTitle} {content[1].exercises}
-      </p>
-      <p>
-        {content[2].partTitle} {content[2].exercises}
-      </p>
+      <Part partExerciseData={content[0]} />
+      <Part partExerciseData={content[1]} />
+      <Part partExerciseData={content[2]} />
     </>
+  );
+};
+
+const Part = ({ partExerciseData }) => {
+  return (
+    <p>
+      {partExerciseData.partTitle} {partExerciseData.exercises}
+    </p>
   );
 };
 
