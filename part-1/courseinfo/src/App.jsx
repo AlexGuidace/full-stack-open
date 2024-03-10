@@ -5,17 +5,17 @@ const Header = ({ course }) => {
 const Content = ({ content }) => {
   return (
     <>
-      <Part partDataObject={content[0]} />
-      <Part partDataObject={content[1]} />
-      <Part partDataObject={content[2]} />
+      <Part partData={content[0]} />
+      <Part partData={content[1]} />
+      <Part partData={content[2]} />
     </>
   );
 };
 
-const Part = ({ partDataObject }) => {
+const Part = ({ partData }) => {
   return (
     <p>
-      {partDataObject.name} {partDataObject.exercises}
+      {partData.name} {partData.exercises}
     </p>
   );
 };
