@@ -2,12 +2,12 @@ const Header = ({ course }) => {
   return <h1>{course}</h1>;
 };
 
-const Content = ({ content }) => {
+const Content = ({ parts }) => {
   return (
     <>
-      <Part partData={content[0]} />
-      <Part partData={content[1]} />
-      <Part partData={content[2]} />
+      <Part partData={parts[0]} />
+      <Part partData={parts[1]} />
+      <Part partData={parts[2]} />
     </>
   );
 };
@@ -20,7 +20,10 @@ const Part = ({ partData }) => {
   );
 };
 
-const Total = ({ totalExercises }) => {
+const Total = ({ parts }) => {
+  const totalExercises =
+    parts[0].exercises + parts[1].exercises + parts[2].exercises;
+
   return <p>Number of exercises: {totalExercises} </p>;
 };
 
@@ -41,14 +44,11 @@ const App = () => {
     },
   ];
 
-  const totalExercises =
-    parts[0].exercises + parts[1].exercises + parts[2].exercises;
-
   return (
     <div>
       <Header course={course} />
-      <Content content={parts} />
-      <Total totalExercises={totalExercises} />
+      <Content parts={parts} />
+      <Total parts={parts} />
     </div>
   );
 };
