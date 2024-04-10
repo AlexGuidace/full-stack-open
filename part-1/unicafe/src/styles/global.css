@@ -1,0 +1,12 @@
+.flexDiv {
+   display: flex;
+   flex-direction: column;
+   align-items: start;
+   padding-left: 20px;
+}
+
+button {
+   text-align: center;
+   width: 100px;
+   margin-bottom: 5px;
+}
