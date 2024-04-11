@@ -50,15 +50,41 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
 
   return hasStatistics ? (
     <div className="flexDiv">
-      <div>Number of Good Clicks: {goodClicks}</div>
-      <div>Number of Neutral Clicks: {neutralClicks}</div>
-      <div>Number of Bad Clicks: {badClicks}</div>
-      <div>Total Clicks: {totalClicks}</div>
-      <div>Average Restaurant Rating Score: {unicafeAverageRating}</div>
-      <div>Positive Feedback Percentage: {positiveFeedbackPercentage}</div>
+      <StatisticLine
+        lineText={'Number of Good Clicks:'}
+        statisticalValue={goodClicks}
+      />
+      <StatisticLine
+        lineText={'Number of Neutral Clicks:'}
+        statisticalValue={neutralClicks}
+      />
+      <StatisticLine
+        lineText={'Number of Bad Clicks:'}
+        statisticalValue={badClicks}
+      />
+      <StatisticLine
+        lineText={'Total Clicks:'}
+        statisticalValue={totalClicks}
+      />
+      <StatisticLine
+        lineText={'Average Restaurant Rating Score:'}
+        statisticalValue={unicafeAverageRating}
+      />
+      <StatisticLine
+        lineText={'Positive Feedback Percentage:'}
+        statisticalValue={positiveFeedbackPercentage}
+      />
     </div>
   ) : (
     <h3>No Feedback Given.</h3>
+  );
+};
+
+const StatisticLine = ({ lineText, statisticalValue }) => {
+  return (
+    <div>
+      {lineText} {statisticalValue}
+    </div>
   );
 };
 
