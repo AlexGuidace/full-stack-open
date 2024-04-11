@@ -15,7 +15,6 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
   const calculateTotalClicks = () => goodClicks + neutralClicks + badClicks;
 
   const calculateAverageRating = () => {
-    let averageRating;
     const goodRating = 1;
     const neutralRating = 0;
     const badRating = -1;
@@ -26,24 +25,13 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
 
     const scoreSum = goodScore + neutralScore + badScore;
 
-    if (totalClicks === 0) {
-      averageRating =
-        'The restaurant does not yet have a rating, since no clicks have been made.';
-    } else {
-      averageRating = scoreSum / totalClicks;
-    }
+    const averageRating = scoreSum / totalClicks;
 
     return averageRating;
   };
 
   const calculatePositiveFeedbackPercentage = () => {
-    let feedbackPercentage;
-
-    if (totalClicks === 0) {
-      feedbackPercentage = 'The restaurant has not received any feedback yet.';
-    } else {
-      feedbackPercentage = (goodClicks / totalClicks) * 100 + '%';
-    }
+    const feedbackPercentage = (goodClicks / totalClicks) * 100 + '%';
 
     return feedbackPercentage;
   };
@@ -52,7 +40,15 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
   const unicafeAverageRating = calculateAverageRating();
   const positiveFeedbackPercentage = calculatePositiveFeedbackPercentage();
 
-  return (
+  // Set boolean value for conditional JSX rendering based on whether any feedback has been given to UniCafe.
+  let hasStatistics;
+  if (goodClicks === 0 && neutralClicks === 0 && badClicks === 0) {
+    hasStatistics = false;
+  } else {
+    hasStatistics = true;
+  }
+
+  return hasStatistics ? (
     <div className="flexDiv">
       <div>Number of Good Clicks: {goodClicks}</div>
       <div>Number of Neutral Clicks: {neutralClicks}</div>
@@ -61,6 +57,8 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
       <div>Average Restaurant Rating Score: {unicafeAverageRating}</div>
       <div>Positive Feedback Percentage: {positiveFeedbackPercentage}</div>
     </div>
+  ) : (
+    <h3>No Feedback Given.</h3>
   );
 };
 
