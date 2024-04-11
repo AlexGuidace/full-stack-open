@@ -26,14 +26,16 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
     const scoreSum = goodScore + neutralScore + badScore;
 
     const averageRating = scoreSum / totalClicks;
+    const averageRatingString = averageRating.toFixed(1);
 
-    return averageRating;
+    return averageRatingString;
   };
 
   const calculatePositiveFeedbackPercentage = () => {
-    const feedbackPercentage = (goodClicks / totalClicks) * 100 + '%';
+    const feedbackPercentage = (goodClicks / totalClicks) * 100;
+    const feedbackPercentageString = feedbackPercentage.toFixed(1) + '%';
 
-    return feedbackPercentage;
+    return feedbackPercentageString;
   };
 
   const totalClicks = calculateTotalClicks();
@@ -49,32 +51,34 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
   }
 
   return hasStatistics ? (
-    <div className="flexDiv">
-      <StatisticLine
-        lineText={'Number of Good Clicks:'}
-        statisticalValue={goodClicks}
-      />
-      <StatisticLine
-        lineText={'Number of Neutral Clicks:'}
-        statisticalValue={neutralClicks}
-      />
-      <StatisticLine
-        lineText={'Number of Bad Clicks:'}
-        statisticalValue={badClicks}
-      />
-      <StatisticLine
-        lineText={'Total Clicks:'}
-        statisticalValue={totalClicks}
-      />
-      <StatisticLine
-        lineText={'Average Restaurant Rating Score:'}
-        statisticalValue={unicafeAverageRating}
-      />
-      <StatisticLine
-        lineText={'Positive Feedback Percentage:'}
-        statisticalValue={positiveFeedbackPercentage}
-      />
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine
+          lineText={'Number of Good Clicks:'}
+          statisticalValue={goodClicks}
+        />
+        <StatisticLine
+          lineText={'Number of Neutral Clicks:'}
+          statisticalValue={neutralClicks}
+        />
+        <StatisticLine
+          lineText={'Number of Bad Clicks:'}
+          statisticalValue={badClicks}
+        />
+        <StatisticLine
+          lineText={'Total Clicks:'}
+          statisticalValue={totalClicks}
+        />
+        <StatisticLine
+          lineText={'Average Restaurant Rating Score:'}
+          statisticalValue={unicafeAverageRating}
+        />
+        <StatisticLine
+          lineText={'Positive Feedback Percentage:'}
+          statisticalValue={positiveFeedbackPercentage}
+        />
+      </tbody>
+    </table>
   ) : (
     <h3>No Feedback Given.</h3>
   );
@@ -82,9 +86,10 @@ const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
 
 const StatisticLine = ({ lineText, statisticalValue }) => {
   return (
-    <div>
-      {lineText} {statisticalValue}
-    </div>
+    <tr>
+      <th>{lineText} </th>
+      <td>{statisticalValue}</td>
+    </tr>
   );
 };
 

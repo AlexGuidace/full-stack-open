@@ -10,3 +10,19 @@ button {
    width: 100px;
    margin-bottom: 5px;
 }
+
+table {
+   border-collapse: collapse;
+}
+
+th {
+   text-align: left;
+   padding: 10px;
+   border: solid 1px black;
+}
+
+td {
+   background: rgb(211, 255, 122);
+   padding: 10px;
+   border: solid 1px black;
+}
