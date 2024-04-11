@@ -11,30 +11,7 @@ const Header = ({ title }) => {
   return <h1>{title}</h1>;
 };
 
-const App = () => {
-  const [goodClicks, setGoodClicks] = useState(0);
-  const [neutralClicks, setNeutralClicks] = useState(0);
-  const [badClicks, setBadClicks] = useState(0);
-
-  // Sets total number of clicks for any given feedback button.
-  const handleClick = (name) => {
-   switch (name) {
-     case 'Good':
-       setGoodClicks(goodClicks + 1);
-       //   setTotalClicks(calculateTotalClicks());
-       break;
-     case 'Neutral':
-       setNeutralClicks(neutralClicks + 1);
-       break;
-     case 'Bad':
-       setBadClicks(badClicks + 1);
-       break;
-     default:
-       console.log(`Something went wrong while clicking the ${name} button.`);
-       break;
-   }
- };
-
+const Statistics = ({ goodClicks, neutralClicks, badClicks }) => {
   const calculateTotalClicks = () => goodClicks + neutralClicks + badClicks;
 
   const calculateAverageRating = () => {
@@ -65,7 +42,7 @@ const App = () => {
     if (totalClicks === 0) {
       feedbackPercentage = 'The restaurant has not received any feedback yet.';
     } else {
-      feedbackPercentage = (goodClicks / totalClicks * 100) + '%';
+      feedbackPercentage = (goodClicks / totalClicks) * 100 + '%';
     }
 
     return feedbackPercentage;
@@ -76,6 +53,41 @@ const App = () => {
   const positiveFeedbackPercentage = calculatePositiveFeedbackPercentage();
 
   return (
+    <div className="flexDiv">
+      <div>Number of Good Clicks: {goodClicks}</div>
+      <div>Number of Neutral Clicks: {neutralClicks}</div>
+      <div>Number of Bad Clicks: {badClicks}</div>
+      <div>Total Clicks: {totalClicks}</div>
+      <div>Average Restaurant Rating Score: {unicafeAverageRating}</div>
+      <div>Positive Feedback Percentage: {positiveFeedbackPercentage}</div>
+    </div>
+  );
+};
+
+const App = () => {
+  const [goodClicks, setGoodClicks] = useState(0);
+  const [neutralClicks, setNeutralClicks] = useState(0);
+  const [badClicks, setBadClicks] = useState(0);
+
+  // Adds to the total click-count for a given feedback button.
+  const handleClick = (name) => {
+    switch (name) {
+      case 'Good':
+        setGoodClicks(goodClicks + 1);
+        break;
+      case 'Neutral':
+        setNeutralClicks(neutralClicks + 1);
+        break;
+      case 'Bad':
+        setBadClicks(badClicks + 1);
+        break;
+      default:
+        console.log(`Something went wrong while clicking the ${name} button.`);
+        break;
+    }
+  };
+
+  return (
     <>
       <Header title="Give Feedback about Your Experience at Unicafe:" />
       <div className="flexDiv">
@@ -84,14 +96,11 @@ const App = () => {
         <Button name="Bad" onClick={handleClick} />
       </div>
       <Header title="Overall Feedback Statistics:" />
-      <div className="flexDiv">
-        <div>Number of Good Clicks: {goodClicks}</div>
-        <div>Number of Neutral Clicks: {neutralClicks}</div>
-        <div>Number of Bad Clicks: {badClicks}</div>
-        <div>Total Clicks: {totalClicks}</div>
-        <div>Average Restaurant Rating Score: {unicafeAverageRating}</div>
-        <div>Positive Feedback Percentage: {positiveFeedbackPercentage}</div>
-      </div>
+      <Statistics
+        goodClicks={goodClicks}
+        neutralClicks={neutralClicks}
+        badClicks={badClicks}
+      />
     </>
   );
 };
