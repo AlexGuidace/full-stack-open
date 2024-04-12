@@ -1,13 +1,18 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
+import './styles/global.css';
 
-const Quote = ({ text }) => {
+const Anecdote = ({ text }) => {
   // eslint-disable-next-line react/no-unescaped-entities
   return <p>"{text}"</p>;
 };
 
 const Button = ({ name, onClick }) => {
   return <button onClick={onClick}>{name}</button>;
+};
+
+const Votes = ({ votes }) => {
+  return <div>This anecdote currently has {votes} votes.</div>;
 };
 
 const App = () => {
@@ -22,31 +27,57 @@ const App = () => {
     'The only way to go fast, is to go well.',
   ];
 
+  const initialVotesArray = Array(anecdotes.length).fill(0);
+
   const [randomAnecdote, setRandomAnecdote] = useState(anecdotes[0]);
-  const [previousRandomNumber, setPreviousRandomNumber] = useState(0);
+  const [currentAnecdoteIndex, setCurrentAnecdoteIndex] = useState(0);
+  const [votesArray, setVotesArray] = useState(initialVotesArray);
+  const [currentAnecdoteVotes, setCurrentAnecdoteVotes] = useState(0);
 
   // Returns a new, randomized anecdote to the user.
-  const handleClick = () => {
+  const handleNextAnecdoteClick = () => {
     calculateAndSetRandomAnecdote();
   };
 
+  // Adds a vote to an anecdote displayed to the user.
+  const handleVoteClick = () => {
+    const votesArrayCopy = [...votesArray];
+    //  Add 1 to the total current number of votes for this anecdote.
+    const currentAnecdoteVotesValue = (votesArrayCopy[
+      currentAnecdoteIndex
+    ] += 1);
+
+    // Get updated number of votes for this anecdote to display to the user.
+    setCurrentAnecdoteVotes(currentAnecdoteVotesValue);
+    // Set the votes array to the new updated array.
+    setVotesArray(votesArrayCopy);
+  };
+
+  console.log(votesArray);
+
   const calculateAndSetRandomAnecdote = () => {
-    // Get a random integer based on the anecdotes array length.
-    let randomNumber = Math.floor(Math.random() * anecdotes.length);
+    // Get a random integer--used to access an individual anecdote in the anecdotes array--based on the array's length.
+    let randomIndex = Math.floor(Math.random() * anecdotes.length);
 
     // We don't want to display the same quote consecutively, so we add a check here for that.
-    while (randomNumber === previousRandomNumber) {
-      randomNumber = Math.floor(Math.random() * anecdotes.length);
+    while (randomIndex === currentAnecdoteIndex) {
+      randomIndex = Math.floor(Math.random() * anecdotes.length);
     }
 
-    setPreviousRandomNumber(randomNumber);
-    setRandomAnecdote(anecdotes[randomNumber]);
+    // Set the currentAnecdoteIndex state for subsequent calls to this function and for use in handling anecdote votes.
+    setCurrentAnecdoteIndex(randomIndex);
+    // Get total number of votes for this anecdote to display to the user.
+    setCurrentAnecdoteVotes(votesArray[randomIndex]);
+    // Assign the new anecdote to the randomAnecdote state.
+    setRandomAnecdote(anecdotes[randomIndex]);
   };
 
   return (
     <>
-      <Quote text={randomAnecdote} />
-      <Button name={'Next Anecdote'} onClick={handleClick} />
+      <Anecdote text={randomAnecdote} />
+      <Votes votes={currentAnecdoteVotes} />
+      <Button name={'I love this anecdote!'} onClick={handleVoteClick} />
+      <Button name={'Next Anecdote'} onClick={handleNextAnecdoteClick} />
     </>
   );
 };
