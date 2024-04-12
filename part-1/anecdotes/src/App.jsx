@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import './styles/global.css';
@@ -12,7 +13,33 @@ const Button = ({ name, onClick }) => {
 };
 
 const Votes = ({ votes }) => {
-  return <div>This anecdote currently has {votes} votes.</div>;
+  return (
+    <div className="styledDiv">
+      This anecdote currently has <span>{votes}</span> votes.
+    </div>
+  );
+};
+
+const Heading = ({ title }) => {
+  return <h1>{title}:</h1>;
+};
+
+const MostVotedAnecdote = ({ mostVotedAnecdote }) => {
+  return (
+    <>
+      {mostVotedAnecdote.anecdote !== '' ? (
+        <>
+          <p>"{mostVotedAnecdote.anecdote}"</p>
+          <div className="styledDiv">
+            This anecdote is most popular with{' '}
+            <span>{mostVotedAnecdote.votes}</span> votes in total.
+          </div>
+        </>
+      ) : (
+        <div className="styledDiv">No votes have been made yet.</div>
+      )}
+    </>
+  );
 };
 
 const App = () => {
@@ -27,19 +54,28 @@ const App = () => {
     'The only way to go fast, is to go well.',
   ];
 
+  // A zero-filled array for the votesArray state variable.
   const initialVotesArray = Array(anecdotes.length).fill(0);
+  const heartEmoji = '\u{2764}';
 
-  const [randomAnecdote, setRandomAnecdote] = useState(anecdotes[0]);
+  // State.
+  const [currentRandomAnecdote, setCurrentRandomAnecdote] = useState(
+    anecdotes[0]
+  );
   const [currentAnecdoteIndex, setCurrentAnecdoteIndex] = useState(0);
   const [votesArray, setVotesArray] = useState(initialVotesArray);
   const [currentAnecdoteVotes, setCurrentAnecdoteVotes] = useState(0);
+  const [mostVotedAnecdote, setMostVotedAnecdote] = useState({
+    anecdote: '',
+    votes: 0,
+  });
 
   // Returns a new, randomized anecdote to the user.
   const handleNextAnecdoteClick = () => {
     calculateAndSetRandomAnecdote();
   };
 
-  // Adds a vote to an anecdote displayed to the user.
+  // Adds a vote to an anecdote displayed to the user and sets the most-voted anecdote.
   const handleVoteClick = () => {
     const votesArrayCopy = [...votesArray];
     //  Add 1 to the total current number of votes for this anecdote.
@@ -51,15 +87,28 @@ const App = () => {
     setCurrentAnecdoteVotes(currentAnecdoteVotesValue);
     // Set the votes array to the new updated array.
     setVotesArray(votesArrayCopy);
+    // Display the most popular anecdote any time the vote button is clicked and the vote count changes for a particular anecdote. Use votesArrayCopy for this since it already contains the most updated values for the votes array, and we don't have to rely on state rendering to get those updated values.
+    getMostVotedAnecdote(votesArrayCopy, anecdotes);
   };
 
-  console.log(votesArray);
+  const getMostVotedAnecdote = (votesArrayCopy, anecdotes) => {
+    const mostVotes = Math.max(...votesArrayCopy);
+    const mostVotedAnecdoteIndex = votesArrayCopy.indexOf(mostVotes);
+    const anecdote = anecdotes[mostVotedAnecdoteIndex];
+
+    const anecdoteToBeDisplayed = {
+      anecdote: anecdote,
+      votes: mostVotes,
+    };
+
+    setMostVotedAnecdote(anecdoteToBeDisplayed);
+  };
 
   const calculateAndSetRandomAnecdote = () => {
     // Get a random integer--used to access an individual anecdote in the anecdotes array--based on the array's length.
     let randomIndex = Math.floor(Math.random() * anecdotes.length);
 
-    // We don't want to display the same quote consecutively, so we add a check here for that.
+    // We don't want to display the same anecdote consecutively, so we add a check here for that.
     while (randomIndex === currentAnecdoteIndex) {
       randomIndex = Math.floor(Math.random() * anecdotes.length);
     }
@@ -69,15 +118,21 @@ const App = () => {
     // Get total number of votes for this anecdote to display to the user.
     setCurrentAnecdoteVotes(votesArray[randomIndex]);
     // Assign the new anecdote to the randomAnecdote state.
-    setRandomAnecdote(anecdotes[randomIndex]);
+    setCurrentRandomAnecdote(anecdotes[randomIndex]);
   };
 
   return (
     <>
-      <Anecdote text={randomAnecdote} />
+      <Heading title={'Anecdote of the Day'} />
+      <Anecdote text={currentRandomAnecdote} />
       <Votes votes={currentAnecdoteVotes} />
-      <Button name={'I love this anecdote!'} onClick={handleVoteClick} />
+      <Button
+        name={`I ${heartEmoji} this anecdote!`}
+        onClick={handleVoteClick}
+      />
       <Button name={'Next Anecdote'} onClick={handleNextAnecdoteClick} />
+      <Heading title={'Anecdote with Most Votes'} />
+      <MostVotedAnecdote mostVotedAnecdote={mostVotedAnecdote} />
     </>
   );
 };
