@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import Course from './components/Course';
 
-// const Total = ({ sum }) => <p>Number of exercises {sum}</p>;
-
 const App = () => {
   const courseData = {
     id: 1,
