@@ -6,9 +6,13 @@ import './styles/global.css';
 let id = 0;
 
 const App = () => {
-  const [persons, setPersons] = useState([{ id: id, name: 'Arto Hellas' }]);
+  const [persons, setPersons] = useState([
+    { id: id, name: 'Napoleon Bonaparte', number: '765-208-9943' },
+  ]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [showAll, setShowAll] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
@@ -16,6 +20,27 @@ const App = () => {
 
   const handleNumberChange = (e) => {
     setNewNumber(e.target.value);
+  };
+
+  const handleSearchTerm = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    setSearchTerm(searchValue);
+
+    // Check to see if we found the user's search term in the persons array.
+    const personContainingSearchTerm = persons.find((person) =>
+      person.name.toLowerCase().includes(searchValue)
+    );
+
+    // Set showAll state variable to false for a filtered list of matched people.
+    if (personContainingSearchTerm !== undefined) {
+      setShowAll(false);
+      // Show nothing if the search term entered wasn't matched.
+    } else if (personContainingSearchTerm === undefined && searchValue !== '') {
+      setShowAll(false);
+      // Show all items if there is no text in the search input.
+    } else {
+      setShowAll(true);
+    }
   };
 
   const addPhoneNumbers = (e) => {
@@ -36,18 +61,34 @@ const App = () => {
     setPersons(personsCopy);
   };
 
-  console.log(persons);
+  // On each render, show a list according to whether a user searched for a person and a match was found in handleSearchTerm().
+  const personsToShow = showAll
+    ? persons
+    : persons.filter((person) =>
+        person.name.toLowerCase().includes(searchTerm)
+      );
 
   return (
     <div>
       <Header title={'Phonebook'} />
+      <div>
+        Search for a Person:{' '}
+        <input
+          type="text"
+          placeholder="Search... "
+          value={searchTerm}
+          onChange={handleSearchTerm}
+        />
+      </div>
+      <Header title={'New Entry:'} />
       <form onSubmit={addPhoneNumbers}>
         <div>
-          Name: <input value={newName} onChange={handleNameChange} />
+          Name:{' '}
+          <input type="text" value={newName} onChange={handleNameChange} />
         </div>
         <div>
           Phone Number:{' '}
-          <input value={newNumber} onChange={handleNumberChange} />
+          <input type="text" value={newNumber} onChange={handleNumberChange} />
         </div>
         <div>
           <button type="submit">Add Person</button>
@@ -55,7 +96,7 @@ const App = () => {
       </form>
       <Header title={'List of Phone Numbers:'} />
       <ul>
-        {persons.map((person) => (
+        {personsToShow.map((person) => (
           <li key={person.id}>
             {person.name}: {person.number}
           </li>
