@@ -13,10 +13,17 @@ const App = () => {
     setNewName(e.target.value);
   };
 
-  const addNumbers = (e) => {
+  const addPhoneNumbers = (e) => {
     e.preventDefault();
 
-    // Update a person's id for each new person added.
+    // Check current array of people to see if the person being added is already in it. If they are, alert the user and don't add the new person to the array.
+    const isPersonInArray = persons.some((person) => person.name === newName);
+    if (isPersonInArray) {
+      alert(`${newName} is already in the phonebook.`);
+      setNewName('');
+      return;
+    }
+
     id += 1;
     const newPerson = { id: id, name: newName };
     const personsCopy = [...persons, newPerson];
@@ -29,15 +36,15 @@ const App = () => {
   return (
     <div>
       <Header title={'Phonebook'} />
-      <form onSubmit={addNumbers}>
+      <form onSubmit={addPhoneNumbers}>
         <div>
-          name: <input value={newName} onChange={handleNameChange} />
+          Name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button type="submit">Add Person</button>
         </div>
       </form>
-      <Header title={'Numbers'} />
+      <Header title={'List of Phone Numbers:'} />
       <ul>
         {persons.map((person) => (
           <li key={person.id}>{person.name}</li>

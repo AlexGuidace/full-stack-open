@@ -2,3 +2,11 @@ ul {
    list-style: none;
    padding-left: 0px;
 }
+
+form {
+   display: flex;
+}
+
+form :nth-child(2) {
+   padding-left: 10px;
+}
