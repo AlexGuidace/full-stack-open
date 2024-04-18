@@ -8,9 +8,14 @@ let id = 0;
 const App = () => {
   const [persons, setPersons] = useState([{ id: id, name: 'Arto Hellas' }]);
   const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
+  };
+
+  const handleNumberChange = (e) => {
+    setNewNumber(e.target.value);
   };
 
   const addPhoneNumbers = (e) => {
@@ -25,7 +30,7 @@ const App = () => {
     }
 
     id += 1;
-    const newPerson = { id: id, name: newName };
+    const newPerson = { id: id, name: newName, number: newNumber };
     const personsCopy = [...persons, newPerson];
 
     setPersons(personsCopy);
@@ -41,13 +46,19 @@ const App = () => {
           Name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
+          Phone Number:{' '}
+          <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
           <button type="submit">Add Person</button>
         </div>
       </form>
       <Header title={'List of Phone Numbers:'} />
       <ul>
         {persons.map((person) => (
-          <li key={person.id}>{person.name}</li>
+          <li key={person.id}>
+            {person.name}: {person.number}
+          </li>
         ))}
       </ul>
     </div>
