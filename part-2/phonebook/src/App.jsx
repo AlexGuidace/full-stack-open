@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 import Header from './components/Header';
 import SearchFilter from './components/SearchFilter';
 import NewEntryForm from './components/NewEntryForm';
@@ -9,13 +11,18 @@ import './styles/global.css';
 let id = 0;
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { id: id, name: 'Napoleon Bonaparte', number: '765-208-9943' },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // When the app mounts, seed the person's array with the JSON-server DB data.
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons').then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   const handleNameChange = (e) => {
     const name = e.target.value;
