@@ -1,14 +1,11 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import SearchFilter from './components/SearchFilter';
 import NewEntryForm from './components/NewEntryForm';
 import Persons from './components/Persons';
+import personsService from './services/personsService';
 import './styles/global.css';
-
-// A person's updatable id used for unique keys in li elements.
-let id = 0;
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -19,8 +16,8 @@ const App = () => {
 
   // When the app mounts, seed the person's array with the JSON-server DB data.
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    personsService.getPersons().then((persons) => {
+      setPersons(persons);
     });
   }, []);
 
@@ -55,7 +52,7 @@ const App = () => {
     }
   };
 
-  const addPhoneNumbers = (e) => {
+  const addEntry = (e) => {
     e.preventDefault();
 
     // Remove extra whitespace for persons array person duplication check and to prevent extra white space in person properties. Lowercase name for consistency across names in array.
@@ -78,13 +75,14 @@ const App = () => {
       return;
     }
 
-    id += 1;
-    const newPerson = { id: id, name: name, number: number };
-    const personsCopy = [...persons, newPerson];
+    const newPerson = { name: name, number: number };
 
-    setPersons(personsCopy);
-    setNewName('');
-    setNewNumber('');
+    // Add new person entry to JSON-server and update the UI with an updated persons array.
+    personsService.createPerson(newPerson).then((person) => {
+      setPersons(persons.concat(person));
+      setNewName('');
+      setNewNumber('');
+    });
   };
 
   // On each render, show a list according to whether a user searched for a person and a match was found in handleSearchTerm().
@@ -100,7 +98,7 @@ const App = () => {
       <SearchFilter value={searchTerm} onChange={handleSearchTerm} />
       <Header title={'New Entry:'} />
       <NewEntryForm
-        onSubmit={addPhoneNumbers}
+        onSubmit={addEntry}
         onNameChange={handleNameChange}
         onNumberChange={handleNumberChange}
         nameValue={newName}
