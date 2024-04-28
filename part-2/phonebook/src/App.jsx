@@ -16,9 +16,15 @@ const App = () => {
 
   // When the app mounts, seed the person's array with the JSON-server DB data.
   useEffect(() => {
-    personsService.getPersons().then((persons) => {
-      setPersons(persons);
-    });
+    personsService
+      .getPersons()
+      .then((persons) => {
+        setPersons(persons);
+      })
+      .catch((error) => {
+        alert(`There was an error getting all people in the phonebook.`);
+        console.log(`There was an error in getting all persons: ${error}`);
+      });
   }, []);
 
   const handleNameChange = (e) => {
@@ -44,11 +50,38 @@ const App = () => {
     if (personContainingSearchTerm !== undefined) {
       setShowAll(false);
       // Show nothing if the search term entered wasn't matched.
-    } else if (personContainingSearchTerm === undefined && searchValue !== '') {
+    } else if (personContainingSearchTerm === undefined) {
       setShowAll(false);
       // Show all items if there is no text in the search input.
     } else {
       setShowAll(true);
+    }
+  };
+
+  const handleDeletePerson = (person) => {
+    // Open modal allowing user to delete a person entry.
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personsService
+        .deletePerson(person.id)
+        .then((person) => {
+          alert(`${person.name} successfully deleted!`);
+          // After the person is deleted, get updated persons array data and update the persons state in the UI.
+          personsService
+            .getPersons()
+            .then((persons) => {
+              setPersons(persons);
+            })
+            .catch((error) => {
+              alert(`There was an error getting all people in the phonebook.`);
+              console.log(
+                `There was an error in getting all persons: ${error}`
+              );
+            });
+        })
+        .catch((error) => {
+          alert(`${person.name} wasn't deleted due to an error.`);
+          console.log(`Person deletion did not occur due to: ${error}`);
+        });
     }
   };
 
@@ -78,11 +111,17 @@ const App = () => {
     const newPerson = { name: name, number: number };
 
     // Add new person entry to JSON-server and update the UI with an updated persons array.
-    personsService.createPerson(newPerson).then((person) => {
-      setPersons(persons.concat(person));
-      setNewName('');
-      setNewNumber('');
-    });
+    personsService
+      .createPerson(newPerson)
+      .then((person) => {
+        setPersons(persons.concat(person));
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch((error) => {
+        alert(`${newPerson.name} wasn't added due to an error.`);
+        console.log(`Person creation did not occur due to: ${error}`);
+      });
   };
 
   // On each render, show a list according to whether a user searched for a person and a match was found in handleSearchTerm().
@@ -105,7 +144,10 @@ const App = () => {
         numberValue={newNumber}
       />
       <Header title={'List of Phone Numbers:'} />
-      <Persons persons={personsToShow} />
+      <Persons
+        persons={personsToShow}
+        onDeletePersonClick={handleDeletePerson}
+      />
     </>
   );
 };

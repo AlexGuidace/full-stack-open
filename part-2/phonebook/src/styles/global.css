@@ -3,6 +3,10 @@ ul {
    padding-left: 0px;
 }
 
+li {
+   margin-bottom: 25px;
+}
+
 form {
    display: flex;
 }
