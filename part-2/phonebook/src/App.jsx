@@ -63,20 +63,13 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personsService
         .deletePerson(person.id)
-        .then((person) => {
-          alert(`${person.name} successfully deleted!`);
-          // After the person is deleted, get updated persons array data and update the persons state in the UI.
-          personsService
-            .getPersons()
-            .then((persons) => {
-              setPersons(persons);
-            })
-            .catch((error) => {
-              alert(`There was an error getting all people in the phonebook.`);
-              console.log(
-                `There was an error in getting all persons: ${error}`
-              );
-            });
+        .then((deletedPerson) => {
+          alert(`${deletedPerson.name} successfully deleted!`);
+          // After the person is deleted, update persons in the UI.
+          const personsCopy = persons.filter(
+            (person) => person.id !== deletedPerson.id
+          );
+          setPersons(personsCopy);
         })
         .catch((error) => {
           alert(`${person.name} wasn't deleted due to an error.`);
@@ -103,8 +96,44 @@ const App = () => {
     // Check current array of people to see if the person being added is already in it. If they are, alert the user and don't add the new person to the array.
     const isPersonInArray = persons.some((person) => person.name === name);
     if (isPersonInArray) {
-      alert(`${name} is already in the phonebook.`);
-      setNewName('');
+      // Get the person object.
+      const person = persons.find((person) => person.name === name);
+      // Open modal allowing user to replace a person's phone number.
+      if (
+        window.confirm(
+          `${person.name} is already in the phonebook. Replace the old number with this new one?`
+        )
+      ) {
+        personsService
+          .updatePersonNumber(person, number)
+          .then((updatedPerson) => {
+            alert(`${updatedPerson.name} successfully updated!`);
+            // After the person is updated, update persons in the UI.
+            personsService
+              .getPersons()
+              .then((persons) => {
+                setPersons(persons);
+              })
+              .catch((error) => {
+                alert(
+                  `There was an error getting all people in the phonebook.`
+                );
+                console.log(
+                  `There was an error in getting all persons: ${error}`
+                );
+              });
+
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch((error) => {
+            alert(
+              `${person.name}'s phone number wasn't updated due to an error.`
+            );
+            console.log(`Person number update did not occur due to: ${error}`);
+          });
+      }
+
       return;
     }
 
