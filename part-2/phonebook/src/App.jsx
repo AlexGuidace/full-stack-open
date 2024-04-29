@@ -81,23 +81,25 @@ const App = () => {
   const addEntry = (e) => {
     e.preventDefault();
 
-    // Remove extra whitespace for persons array person duplication check and to prevent extra white space in person properties. Lowercase name for consistency across names in array.
+    // Remove extra whitespace for persons array person duplication check and to prevent extra white space in person properties. Lowercase entry to prevent duplication due to case sensitivity.
     const name = newName.trim().toLowerCase();
     const number = newNumber.trim();
 
-    // If either form fields only contain empty strings, we notify and prevent the user from submitting and reset the inputs.
+    // If either form fields only contain empty strings, we notify and prevent the user from submitting.
     if (name === '' || number === '') {
       alert('Both name and phone number fields must be filled in.');
-      setNewName('');
-      setNewNumber('');
       return;
     }
 
     // Check current array of people to see if the person being added is already in it. If they are, alert the user and don't add the new person to the array.
-    const isPersonInArray = persons.some((person) => person.name === name);
+    const isPersonInArray = persons.some(
+      (person) => person.name.toLowerCase() === name
+    );
     if (isPersonInArray) {
       // Get the person object.
-      const person = persons.find((person) => person.name === name);
+      const person = persons.find(
+        (person) => person.name.toLowerCase() === name
+      );
       // Open modal allowing user to replace a person's phone number.
       if (
         window.confirm(
@@ -137,7 +139,9 @@ const App = () => {
       return;
     }
 
-    const newPerson = { name: name, number: number };
+    // Capitalize the name of the person in the new entry.
+    const capitalizedName = capitalizeName(name);
+    const newPerson = { name: capitalizedName, number: number };
 
     // Add new person entry to JSON-server and update the UI with an updated persons array.
     personsService
@@ -151,6 +155,20 @@ const App = () => {
         alert(`${newPerson.name} wasn't added due to an error.`);
         console.log(`Person creation did not occur due to: ${error}`);
       });
+  };
+
+  const capitalizeName = (name) => {
+    let capitalizedName = '';
+    const nameArray = name.split(/\s+/);
+
+    nameArray.forEach((word) => {
+      const firstLetter = word[0].toUpperCase();
+      const partialWord = word.substring(1);
+      const uppercasedWord = firstLetter + partialWord;
+      capitalizedName += uppercasedWord + ' ';
+    });
+
+    return capitalizedName.trim();
   };
 
   // On each render, show a list according to whether a user searched for a person and a match was found in handleSearchTerm().
