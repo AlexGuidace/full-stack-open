@@ -15,6 +15,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState(null);
+  const [isErrorNotification, setIsErrorNotification] = useState(false);
 
   // When the app mounts, seed the person's array with the JSON-server DB data.
   useEffect(() => {
@@ -25,7 +26,7 @@ const App = () => {
       })
       .catch((error) => {
         alert(`There was an error getting all people in the phonebook.`);
-        console.log(`There was an error in getting all persons: ${error}`);
+        console.log(`There was an error in getting all persons: '${error}'`);
       });
   }, []);
 
@@ -72,6 +73,7 @@ const App = () => {
           );
 
           setPersons(personsCopy);
+          setIsErrorNotification(false);
           setNotification(
             `${deletedPerson.name} was deleted from the phonebook.`
           );
@@ -80,13 +82,14 @@ const App = () => {
           }, 5000);
         })
         .catch((error) => {
+          setIsErrorNotification(true);
           setNotification(
             `${person.name} wasn't deleted from the phonebook due to an error.`
           );
           setTimeout(() => {
             setNotification(null);
           }, 5000);
-          console.log(`Person deletion did not occur due to: ${error}`);
+          console.log(`Person deletion did not occur due to: '${error}'`);
         });
     }
   };
@@ -133,25 +136,29 @@ const App = () => {
                   `There was an error getting all people in the phonebook.`
                 );
                 console.log(
-                  `There was an error in getting all persons: ${error}`
+                  `There was an error in getting all persons: '${error}'`
                 );
               });
 
             setNewName('');
             setNewNumber('');
+            setIsErrorNotification(false);
             setNotification(`${updatedPerson.name}'s number was updated.`);
             setTimeout(() => {
               setNotification(null);
             }, 5000);
           })
           .catch((error) => {
+            setIsErrorNotification(true);
             setNotification(
-              `${person.name}'s number wasn't updated due to an error.`
+              `${person.name} has already been removed from the server.`
             );
             setTimeout(() => {
               setNotification(null);
             }, 5000);
-            console.log(`Person number update did not occur due to: ${error}`);
+            console.log(
+              `Person number update did not occur due to: '${error}'`
+            );
           });
       }
 
@@ -169,19 +176,21 @@ const App = () => {
         setPersons(persons.concat(person));
         setNewName('');
         setNewNumber('');
+        setIsErrorNotification(false);
         setNotification(`${person.name} was added to the phonebook.`);
         setTimeout(() => {
           setNotification(null);
         }, 5000);
       })
       .catch((error) => {
+        setIsErrorNotification(true);
         setNotification(
           `${newPerson.name} wasn't added to the phonebook due to an error.`
         );
         setTimeout(() => {
           setNotification(null);
         }, 5000);
-        console.log(`Person creation did not occur due to: ${error}`);
+        console.log(`Person creation did not occur due to: '${error}'`);
       });
   };
 
@@ -209,7 +218,7 @@ const App = () => {
   return (
     <>
       <Header title={'Phonebook'} />
-      <Notification message={notification} />
+      <Notification isError={isErrorNotification} message={notification} />
       <SearchFilter value={searchTerm} onChange={handleSearchTerm} />
       <Header title={'New Entry:'} />
       <NewEntryForm

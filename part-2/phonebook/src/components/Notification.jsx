@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-const Notification = ({ message }) => {
+const Notification = ({ isError, message }) => {
   if (message === null) {
     return null;
   }
 
-  return <div className="notification">{message}</div>;
+  // Change style of notification component depending on whether the CRUD operation was a success or returned an error.
+  let notificationStyle;
+  isError ? (notificationStyle = 'error') : (notificationStyle = 'success');
+
+  return <div className={notificationStyle}>{message}</div>;
 };
 
 export default Notification;
