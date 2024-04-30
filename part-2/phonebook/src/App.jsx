@@ -5,6 +5,7 @@ import SearchFilter from './components/SearchFilter';
 import NewEntryForm from './components/NewEntryForm';
 import Persons from './components/Persons';
 import personsService from './services/personsService';
+import Notification from './components/Notification';
 import './styles/global.css';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [notification, setNotification] = useState(null);
 
   // When the app mounts, seed the person's array with the JSON-server DB data.
   useEffect(() => {
@@ -64,15 +66,26 @@ const App = () => {
       personsService
         .deletePerson(person.id)
         .then((deletedPerson) => {
-          alert(`${deletedPerson.name} successfully deleted!`);
           // After the person is deleted, update persons in the UI.
           const personsCopy = persons.filter(
             (person) => person.id !== deletedPerson.id
           );
+
           setPersons(personsCopy);
+          setNotification(
+            `${deletedPerson.name} was deleted from the phonebook.`
+          );
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         })
         .catch((error) => {
-          alert(`${person.name} wasn't deleted due to an error.`);
+          setNotification(
+            `${person.name} wasn't deleted from the phonebook due to an error.`
+          );
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
           console.log(`Person deletion did not occur due to: ${error}`);
         });
     }
@@ -109,7 +122,6 @@ const App = () => {
         personsService
           .updatePersonNumber(person, number)
           .then((updatedPerson) => {
-            alert(`${updatedPerson.name} successfully updated!`);
             // After the person is updated, update persons in the UI.
             personsService
               .getPersons()
@@ -127,11 +139,18 @@ const App = () => {
 
             setNewName('');
             setNewNumber('');
+            setNotification(`${updatedPerson.name}'s number was updated.`);
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
           })
           .catch((error) => {
-            alert(
-              `${person.name}'s phone number wasn't updated due to an error.`
+            setNotification(
+              `${person.name}'s number wasn't updated due to an error.`
             );
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
             console.log(`Person number update did not occur due to: ${error}`);
           });
       }
@@ -150,9 +169,18 @@ const App = () => {
         setPersons(persons.concat(person));
         setNewName('');
         setNewNumber('');
+        setNotification(`${person.name} was added to the phonebook.`);
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
       })
       .catch((error) => {
-        alert(`${newPerson.name} wasn't added due to an error.`);
+        setNotification(
+          `${newPerson.name} wasn't added to the phonebook due to an error.`
+        );
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
         console.log(`Person creation did not occur due to: ${error}`);
       });
   };
@@ -181,6 +209,7 @@ const App = () => {
   return (
     <>
       <Header title={'Phonebook'} />
+      <Notification message={notification} />
       <SearchFilter value={searchTerm} onChange={handleSearchTerm} />
       <Header title={'New Entry:'} />
       <NewEntryForm
