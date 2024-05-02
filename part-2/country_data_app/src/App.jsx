@@ -7,6 +7,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [allCountryNames, setAllCountryNames] = useState(null);
   const [filteredCountryNames, setFilteredCountryNames] = useState([]);
+  const [isMaxCountries, setIsMaxCountries] = useState(false);
 
   useEffect(() => {
     restCountriesService.getAllCountries().then((countries) => {
@@ -28,6 +29,18 @@ const App = () => {
               country.toLowerCase().includes(searchValue.toLowerCase())
             )
           : [];
+
+      console.log(searchedCountries);
+
+      if (searchedCountries.length > 10) {
+        setIsMaxCountries(true);
+      } else if (
+        (searchedCountries.length >= 1 && searchedCountries.length <= 10) ||
+        searchedCountries.length < 1
+      ) {
+        setIsMaxCountries(false);
+      }
+
       setFilteredCountryNames(searchedCountries);
     } catch (error) {
       // TODO: Create notification to display errors.
@@ -45,11 +58,17 @@ const App = () => {
         value={searchTerm}
         onChange={handleSearchTerm}
       />
-      <ul>
-        {filteredCountryNames.map((country) => (
-          <li key={country}>{country}</li>
-        ))}
-      </ul>
+      {isMaxCountries ? (
+        <p>
+          Too many country matches; please be more specific with your query.
+        </p>
+      ) : (
+        <ul>
+          {filteredCountryNames.map((country) => (
+            <li key={country}>{country}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
