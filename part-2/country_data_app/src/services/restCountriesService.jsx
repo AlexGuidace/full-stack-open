@@ -4,12 +4,14 @@ const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api';
 
 const getAllCountries = () => {
   const getRequest = axios.get(`${baseUrl}/all`);
-  return getRequest.then((response) => response.data);
+  const data = getRequest.then((response) => response.data);
+  return data;
 };
 
 const getCountry = (name) => {
   const getRequest = axios.get(`${baseUrl}/name/${name}`);
-  return getRequest.then((response) => response.data);
+  const data = getRequest.then((response) => response.data);
+  return data;
 };
 
 export default { getAllCountries, getCountry };

@@ -9,45 +9,58 @@ const Country = ({ countryData }) => {
 
   // Inline styles.
   const container = {
+    display: 'inline-block',
+    padding: '25px',
+    border: 'solid 1px',
+    borderRadius: '5px',
+  };
+
+  const flexContainer = {
     display: 'flex',
     alignItems: 'center',
   };
 
-  const languagesParagraph = {
+  const languagesStyles = {
     marginBottom: '8px',
+    fontFamily: 'Arial, sans-serif',
   };
 
-  const ul = {
+  const ulStyles = {
     listStyleType: 'disc',
+    fontFamily: 'Arial, sans-serif',
   };
 
-  const imgStyle = {
+  const pStyles = {
+    fontFamily: 'Arial, sans-serif',
+  };
+
+  const imgStyles = {
     paddingTop: '20px',
     width: '200px',
     height: '200px',
   };
 
-  const flag = {
+  const flagIconStyles = {
     paddingLeft: '8px',
   };
 
   return (
-    <div>
-      <div style={container}>
+    <div style={container}>
+      <div style={flexContainer}>
         <h2>{countryData.name.common}</h2>
-        <span style={flag}>{countryData.flag}</span>
+        <span style={flagIconStyles}>{countryData.flag}</span>
       </div>
-      <p>Its capital is {countryData.capital}. </p>
-      <p>Its area is {countryData.area} square kilometers. </p>
+      <p style={pStyles}>Its capital is {countryData.capital}. </p>
+      <p style={pStyles}>Its area is {countryData.area} square kilometers. </p>
       <div>
-        <p style={languagesParagraph}>Languages spoken: </p>
-        <ul style={ul}>
+        <p style={languagesStyles}>Languages spoken: </p>
+        <ul style={ulStyles}>
           {languages.map(([key, value]) => (
             <li key={key}>{value}</li>
           ))}
         </ul>
         <img
-          style={imgStyle}
+          style={imgStyles}
           src={countryData.flags.png}
           alt={countryData.flags.alt}
         />

@@ -21,7 +21,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // TODO: Add catch block.
     // If we only have one country, display more of its information.
     if (filteredCountryNames.length === 1) {
       // TODO: Add catch block.
@@ -54,6 +53,7 @@ const App = () => {
         setIsMaxCountries(false);
       }
 
+      // TODO: Possibly wrap this in a setTimeout() to account for high API network latency?
       setFilteredCountryNames(searchedCountries);
     } catch (error) {
       // TODO: Create notification to display errors.
