@@ -52,16 +52,24 @@ const App = () => {
         searchedCountries.length < 1
       ) {
         setIsMaxCountries(false);
+
+        // Populate an array of objects for each country that was found in the search, to control display of those countries' information.
+        const countryObjectsPromise = Promise.all(
+          searchedCountries.map((country) =>
+            restCountriesService.getCountry(country).then((data) => ({
+              name: country,
+              isHidden: true,
+              countryApiData: data,
+            }))
+          )
+        );
+
+        // Set the countries state with new country objects.
+        countryObjectsPromise.then((countryObjects) => {
+          // TODO: Possibly wrap this in a setTimeout() to account for high API network latency?
+          setCountries(countryObjects);
+        });
       }
-
-      // Populate an array of objects for each country that was found in the search, to control display of those countries' information.
-      const countryObjects = searchedCountries.map((country) => ({
-        name: country,
-        isShown: true,
-      }));
-
-      // TODO: Possibly wrap this in a setTimeout() to account for high API network latency?
-      setCountries(countryObjects);
     } catch (error) {
       // TODO: Create notification to display errors.
       console.log(`Country names have not been loaded yet: '${error}'`);
@@ -72,16 +80,20 @@ const App = () => {
     // Update the countries array, clicked-country boolean that controls whether or not we display a clicked country's information.
     const updatedCountries = countries.map((countryObject) =>
       countryObject.name.toLowerCase() === countryName.toLowerCase()
-        ? { ...countryObject, isShown: !countryObject.isShown }
+        ? { ...countryObject, isHidden: !countryObject.isHidden }
         : countryObject
     );
 
     // Update the state for our countries with the updated country object
     setCountries(updatedCountries);
+  };
 
-    restCountriesService.getCountry(countryName).then((data) => {
-      setCountryData(data);
-    });
+  // Inline styles.
+  const ulStyles = {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingRight: '10px',
+    listStyleType: 'none',
   };
 
   return (
@@ -99,15 +111,14 @@ const App = () => {
           Too many country matches; please be more specific with your query.
         </p>
       ) : (
-        <ul>
+        <ul style={ulStyles}>
           {countries.map((country) =>
             countries.length === 1 ? (
               <Country key={country.name} countryData={countryData} />
             ) : (
               <ClickableCountry
                 key={country.name}
-                country={country.name}
-                isShown={country.isShown}
+                country={country}
                 onClick={() => handleCountryClick(country.name)}
               />
             )

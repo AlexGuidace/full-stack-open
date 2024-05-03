@@ -9,10 +9,11 @@ const Country = ({ countryData }) => {
 
   // Inline styles.
   const container = {
-    display: 'inline-block',
+    display: 'block',
     padding: '25px',
     border: 'solid 1px',
     borderRadius: '5px',
+    maxWidth: '280px',
   };
 
   const flexContainer = {
