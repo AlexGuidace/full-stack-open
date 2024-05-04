@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Country from './components/Country';
 import ClickableCountry from './components/ClickableCountry';
 import restCountriesService from './services/restCountriesService';
+import weatherService from './services/weatherService';
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -44,7 +45,7 @@ const App = () => {
             )
           : [];
 
-      // Determines if we display 1-10 countries that were filtered, or none at all.
+      // Determines if we display no countries if there are more than 10 and a message concerning that, or the 1-10 countries that were filtered by the search, or nothing at all if there were no matched searches.
       if (searchedCountries.length > 10) {
         setIsMaxCountries(true);
       } else if (
@@ -64,9 +65,16 @@ const App = () => {
           )
         );
 
+        // WEATHER API TEST on Helsinki, Finland.
+        weatherService
+          .getCountryCapitalWeather(60.17, 24.93)
+          .then((weather) => {
+            console.log('weather object in imperial units: ', weather);
+          });
+
         // Set the countries state with new country objects.
         countryObjectsPromise.then((countryObjects) => {
-          // TODO: Possibly wrap this in a setTimeout() to account for high API network latency?
+          // TODO: Possibly wrap this in a setTimeout() to account for high API network latency? Maybe create a loading notification?
           setCountries(countryObjects);
         });
       }

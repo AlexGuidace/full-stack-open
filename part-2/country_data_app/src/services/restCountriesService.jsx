@@ -1,3 +1,5 @@
+// [Documentation for REST Countries API](https://studies.cs.helsinki.fi/restcountries/)
+
 import axios from 'axios';
 
 const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api';
