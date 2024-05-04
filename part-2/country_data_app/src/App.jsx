@@ -54,27 +54,26 @@ const App = () => {
       ) {
         setIsMaxCountries(false);
 
-        // Populate an array of objects for each country that was found in the search, to control display of those countries' information.
+        // Populate an array of objects for each country that was found in the search. Each object contains the country's name, a boolean used to determine if we are to display that country's information, API overall information for that country, and API current weather data for that country's capital.
         const countryObjectsPromise = Promise.all(
           searchedCountries.map((country) =>
-            restCountriesService.getCountry(country).then((data) => ({
-              name: country,
-              isHidden: true,
-              countryApiData: data,
-            }))
+            restCountriesService.getCountry(country).then((countryData) =>
+              weatherService
+                .getCountryCapitalWeather(countryData.capitalInfo.latlng)
+                .then((weatherData) => ({
+                  name: country,
+                  isHidden: true,
+                  countryApiData: countryData,
+                  capitalWeatherData: weatherData,
+                }))
+            )
           )
         );
-
-        // WEATHER API TEST on Helsinki, Finland.
-        weatherService
-          .getCountryCapitalWeather(60.17, 24.93)
-          .then((weather) => {
-            console.log('weather object in imperial units: ', weather);
-          });
 
         // Set the countries state with new country objects.
         countryObjectsPromise.then((countryObjects) => {
           // TODO: Possibly wrap this in a setTimeout() to account for high API network latency? Maybe create a loading notification?
+          console.log('COUNTRY OBJECTS: ', countryObjects);
           setCountries(countryObjects);
         });
       }
