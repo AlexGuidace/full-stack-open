@@ -30,7 +30,7 @@ const ClickableCountry = ({ country, onClick }) => {
     </li>
   ) : (
     <div style={flexContainer}>
-      <Country countryData={country.countryApiData} />
+      <Country country={country} />
       <button style={flexButtonStyles} onClick={onClick}>
         Hide
       </button>

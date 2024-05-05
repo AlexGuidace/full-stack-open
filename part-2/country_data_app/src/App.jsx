@@ -26,9 +26,19 @@ const App = () => {
     // If we only have one country, display more of its information.
     if (countries.length === 1) {
       // TODO: Add catch block.
-      restCountriesService.getCountry(countries[0].name).then((data) => {
-        setCountryData(data);
-      });
+      restCountriesService.getCountry(countries[0].name).then((countryData) =>
+        weatherService
+          .getCountryCapitalWeather(countryData.capitalInfo.latlng)
+          .then((weatherData) => {
+            const countryObject = {
+              name: countryData.name.common,
+              isHidden: true,
+              countryApiData: countryData,
+              capitalWeatherData: weatherData,
+            };
+            setCountryData(countryObject);
+          })
+      );
     }
   }, [countries]);
 
@@ -69,11 +79,11 @@ const App = () => {
             )
           )
         );
+        // TODO: Put a catch-block here for Promise.all().
 
         // Set the countries state with new country objects.
         countryObjectsPromise.then((countryObjects) => {
           // TODO: Possibly wrap this in a setTimeout() to account for high API network latency? Maybe create a loading notification?
-          console.log('COUNTRY OBJECTS: ', countryObjects);
           setCountries(countryObjects);
         });
       }
@@ -121,7 +131,7 @@ const App = () => {
         <ul style={ulStyles}>
           {countries.map((country) =>
             countries.length === 1 ? (
-              <Country key={country.name} countryData={countryData} />
+              <Country key={country.name} country={countryData} />
             ) : (
               <ClickableCountry
                 key={country.name}
