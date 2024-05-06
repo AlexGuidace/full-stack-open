@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import Country from './Country';
+import CountryCard from './CountryCard';
 
 const ClickableCountry = ({ country, onClick }) => {
   // Inline styles.
@@ -30,7 +30,7 @@ const ClickableCountry = ({ country, onClick }) => {
     </li>
   ) : (
     <div style={flexContainer}>
-      <Country country={country} />
+      <CountryCard country={country} />
       <button style={flexButtonStyles} onClick={onClick}>
         Hide
       </button>

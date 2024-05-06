@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import Header from './components/Header';
-import Country from './components/Country';
+import CountryCard from './components/CountryCard';
 import ClickableCountry from './components/ClickableCountry';
 import restCountriesService from './services/restCountriesService';
 import weatherService from './services/weatherService';
@@ -22,7 +22,6 @@ const App = () => {
         setAllCountryNames(names);
       })
       .catch((error) => {
-        // TODO: Add notification.
         console.log(
           `Something went wrong while trying to get initial data for all countries: '${error}'.`
         );
@@ -48,8 +47,9 @@ const App = () => {
             });
         })
         .catch((error) => {
-          // TODO: Add notification.
-          `Something went wrong while trying to get data for a single country: '${error}'.`;
+          console.log(
+            `Something went wrong while trying to get data for a single country: '${error}'.`
+          );
         });
     }
   }, [countries]);
@@ -98,12 +98,10 @@ const App = () => {
 
         // Set the countries state with new country objects.
         countryObjectsPromise.then((countryObjects) => {
-          // TODO: Possibly wrap this in a setTimeout() to account for high API network latency? Maybe create a loading notification?
           setCountries(countryObjects);
         });
       }
     } catch (error) {
-      // TODO: Create notification to display errors.
       console.log(`Country names have not been loaded yet: '${error}'`);
     }
   };
@@ -146,7 +144,7 @@ const App = () => {
         <ul style={ulStyles}>
           {countries.map((country) =>
             countries.length === 1 ? (
-              <Country key={country.name} country={countryData} />
+              <CountryCard key={country.name} country={countryData} />
             ) : (
               <ClickableCountry
                 key={country.name}
