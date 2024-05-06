@@ -14,31 +14,43 @@ const App = () => {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    // TODO: Add catch block.
-    restCountriesService.getAllCountries().then((countries) => {
-      // Map through array of countries returned by the API to get their names in an array.
-      const names = countries.map((country) => country.name.common);
-      setAllCountryNames(names);
-    });
+    restCountriesService
+      .getAllCountries()
+      .then((countries) => {
+        // Map through array of countries returned by the API to get their names in an array.
+        const names = countries.map((country) => country.name.common);
+        setAllCountryNames(names);
+      })
+      .catch((error) => {
+        // TODO: Add notification.
+        console.log(
+          `Something went wrong while trying to get initial data for all countries: '${error}'.`
+        );
+      });
   }, []);
 
   useEffect(() => {
     // If we only have one country, display more of its information.
     if (countries.length === 1) {
-      // TODO: Add catch block.
-      restCountriesService.getCountry(countries[0].name).then((countryData) =>
-        weatherService
-          .getCountryCapitalWeather(countryData.capitalInfo.latlng)
-          .then((weatherData) => {
-            const countryObject = {
-              name: countryData.name.common,
-              isHidden: true,
-              countryApiData: countryData,
-              capitalWeatherData: weatherData,
-            };
-            setCountryData(countryObject);
-          })
-      );
+      restCountriesService
+        .getCountry(countries[0].name)
+        .then((countryData) => {
+          weatherService
+            .getCountryCapitalWeather(countryData.capitalInfo.latlng)
+            .then((weatherData) => {
+              const countryObject = {
+                name: countryData.name.common,
+                isHidden: true,
+                countryApiData: countryData,
+                capitalWeatherData: weatherData,
+              };
+              setCountryData(countryObject);
+            });
+        })
+        .catch((error) => {
+          // TODO: Add notification.
+          `Something went wrong while trying to get data for a single country: '${error}'.`;
+        });
     }
   }, [countries]);
 
@@ -78,8 +90,11 @@ const App = () => {
                 }))
             )
           )
-        );
-        // TODO: Put a catch-block here for Promise.all().
+        ).catch((error) => {
+          console.log(
+            `Something went wrong while getting searched countries and their weather data for the countries array: '${error}'.`
+          );
+        });
 
         // Set the countries state with new country objects.
         countryObjectsPromise.then((countryObjects) => {
