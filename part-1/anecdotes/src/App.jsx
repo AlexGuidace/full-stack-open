@@ -43,6 +43,7 @@ const MostVotedAnecdote = ({ mostVotedAnecdote }) => {
 };
 
 const App = () => {
+  // [Quotes taken from here: ](https://www.comp.nus.edu.sg/~damithch/pages/SE-quotes.htm)
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
