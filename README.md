@@ -1,6 +1,6 @@
 # Full Stack open MOOC
 
-The focus of this Massive Open Online Course (MOOC) is practical, hands-on, full-stack web development learning and building, using the JavaScript ecosystem.
+The focus of this Massive Open Online Course (MOOC), offered by the University of Helsinki, is practical, hands-on, full-stack web development learning and building, using the JavaScript ecosystem.
 
 A brief description of the course from the [course site](https://fullstackopen.com/en):
 
