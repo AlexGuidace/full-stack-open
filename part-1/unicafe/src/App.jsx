@@ -118,7 +118,7 @@ const App = () => {
 
   return (
     <>
-      <Header title="Give Feedback about Your Experience at Unicafe:" />
+      <Header title="Give Feedback about Your Experience at UniCafe:" />
       <div className="flexDiv">
         <Button name="Good" onClick={handleClick} />
         <Button name="Neutral" onClick={handleClick} />
