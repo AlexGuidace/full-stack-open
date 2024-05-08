@@ -1,8 +1,3 @@
-# React + Vite
+# Country Data App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This app is built with React, [Vite](https://vitejs.dev/), the [Axios](https://axios-http.com/) library, and integrates two external APIs: a [weather API](https://openweathermap.org), and a [world's countries API](https://studies.cs.helsinki.fi/restcountries/). With this RESTful application, a user can look up countries to get information regarding those countries displayed to the UI (e.g., languages spoken in a country, a country's flag, the current weather of a country, etc.). A user can also control which countries are displayed if multiple results are returned from their search.
