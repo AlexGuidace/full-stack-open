@@ -8,6 +8,6 @@ A brief description of the course from the [course site](https://fullstackopen.c
 
 Please see the "part" directories in this repository for my work in this course, and READMEs concerning that work. 🧑🏻‍💻
 
-Some Part exercises require separate repos. Please find them below:
+Some "part" exercises require separate repos. Please find them below:
 
 * https://github.com/AlexGuidace/full-stack-open-part-3
