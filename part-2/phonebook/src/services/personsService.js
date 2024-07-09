@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Express server is hosted on port 3001.
-const baseUrl = 'http://localhost:3001/api/persons';
+const baseUrl = '/api/persons';
 
 const getPersons = () => {
   const getRequest = axios.get(baseUrl);
