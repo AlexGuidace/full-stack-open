@@ -151,7 +151,7 @@ const App = () => {
           .catch((error) => {
             setIsErrorNotification(true);
             setNotification(
-              `${person.name} has already been removed from the server.`
+              `${person.name} wasn't updated due to an error: "${error.response.data.error}"`
             );
             setTimeout(() => {
               setNotification(null);
@@ -185,12 +185,14 @@ const App = () => {
       .catch((error) => {
         setIsErrorNotification(true);
         setNotification(
-          `${newPerson.name} wasn't added to the phonebook due to an error.`
+          `${newPerson.name} wasn't added to the phonebook due to an error: "${error.response.data.error}"`
         );
         setTimeout(() => {
           setNotification(null);
         }, 5000);
-        console.log(`Person creation did not occur due to: '${error}'`);
+        console.log(
+          `Person creation did not occur due to: '${error.response.data.error}'`
+        );
       });
   };
 
