@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const cors = require('cors');
+app.use(express.static('dist'));
 const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
@@ -26,7 +26,6 @@ const mongoUrl = process.env.MONGODB_URI;
 mongoose.connect(mongoUrl);
 console.log('Connected to MongoDB.');
 
-app.use(cors());
 app.use(express.json());
 
 app.get('/api/blogs', (request, response) => {
@@ -86,6 +85,7 @@ app.put('/api/blogs/:id', (request, response) => {
 });
 
 const PORT = process.env.PORT;
+// Runs locally on http://127.0.0.1:PORT/
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
