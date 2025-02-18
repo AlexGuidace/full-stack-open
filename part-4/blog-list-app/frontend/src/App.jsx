@@ -25,18 +25,24 @@ const App = () => {
 
     blogService.checkExistenceOfBlog(encodedUrl).then((returnedId) => {
       if (returnedId) {
-        blogService
-          .updateLikesAndReturnUpdatedCollection(returnedId)
-          .then((updatedBlogsList) => {
-            console.log(
-              `We were able to do the Likes update and get the updated list back: ${JSON.stringify(
-                updatedBlogsList,
-                null,
-                2
-              )}`
-            );
-            setBlogs(updatedBlogsList);
-          });
+        if (formData.get('checkbox') === 'on') {
+          blogService
+            .updateLikesAndReturnUpdatedCollection(returnedId)
+            .then((updatedBlogsList) => {
+              console.log(
+                `We were able to do the Likes update and get the updated list back: ${JSON.stringify(
+                  updatedBlogsList,
+                  null,
+                  2
+                )}`
+              );
+              setBlogs(updatedBlogsList);
+            });
+        } else {
+          console.log(
+            'The checkbox was not checked, so no likes were added for this blog submission.'
+          );
+        }
       } else {
         // Call the POST method, since the blog doesn't exist yet.
         // Create formObject to send to API endpoint/route.

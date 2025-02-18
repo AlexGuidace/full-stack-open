@@ -6,7 +6,7 @@ const Blog = ({ blog }) => {
         <a href={blog.url} target="_blank" rel="noopener noreferrer">
           {blog.title}
         </a>{' '}
-        by {blog.author}. It is has <strong>{blog.likes} likes</strong>.
+        by {blog.author}. It has <strong>{blog.likes} likes</strong>.
       </div>
     </li>
   );

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const cors = require('cors');
 app.use(express.static('dist'));
 const mongoose = require('mongoose');
 
@@ -27,6 +28,7 @@ mongoose.connect(mongoUrl);
 console.log('Connected to MongoDB.');
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/api/blogs', (request, response) => {
   Blog.find({}).then((blogs) => {
@@ -76,7 +78,7 @@ app.post('/api/blogs', (request, response) => {
 app.put('/api/blogs/:id', (request, response) => {
   const { id } = request.params;
 
-  // Use MongoDB $inc operator to increment the value of the likes field by 1.
+  // Use MongoDB $inc operator to increment the value of the likes field by 1 because the checkbox was checked on the frontend for this submission.
   Blog.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true }).then(
     (result) => {
       response.json(result);
