@@ -6,12 +6,29 @@
   padding: 1.5rem;
 }
 
+#checkbox-input {
+   width: auto;
+   margin-right: 10px;
+   margin-bottom: 15px;
+}
+
 .inputDiv {
    margin-bottom: 15px;
 }
 
+.blog {
+   display: flex;
+   flex-direction: column;
+   padding-top: 3px;
+   padding-bottom: 3px;
+}
+
 h2 {
-   margin-top: 0;
+   margin-top: 0px;
+}
+
+ul {
+   padding-left: 0px;
 }
 
 label {
