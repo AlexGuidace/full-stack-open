@@ -4,18 +4,19 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const blogsRouter = require('./controllers/blogs');
+const logger = require('./utils/logger');
 
 mongoose.set('strictQuery', false);
 
-console.log(`Connecting to database: ${config.MONGODB_URI}`);
+logger.info(`Connecting to database: ${config.MONGODB_URI}`);
 
 mongoose
   .connect(config.MONGODB_URI)
   .then(() => {
-    console.log('Connected to database');
+    logger.info('Connected to database');
   })
   .catch((error) => {
-    console.log(`Error connecting to database: ${error.message}`);
+    logger.error('Error connecting to database: ', error.message);
   });
 
 app.use(cors());
@@ -27,5 +28,5 @@ app.use('/api/blogs', blogsRouter);
 const PORT = process.env.PORT;
 // Runs locally on http://127.0.0.1:PORT/
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  logger.info(`Server running on port ${PORT}`);
 });
