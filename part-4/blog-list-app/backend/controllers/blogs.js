@@ -2,7 +2,7 @@ const express = require('express');
 const blogsRouter = express.Router();
 const Blog = require('../models/blog');
 
-// All of our blog routes/endpoints.
+// All of our blogs routes/endpoints.
 
 blogsRouter.get('/', (request, response) => {
   Blog.find({}).then((blogs) => {

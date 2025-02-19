@@ -1,14 +1,22 @@
-require('dotenv').config();
+const config = require('./utils/config');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const blogsRouter = require('./controllers/blogs');
 
-const mongoUrl = process.env.MONGODB_URI;
+mongoose.set('strictQuery', false);
 
-mongoose.connect(mongoUrl);
-console.log('Connected to MongoDB.');
+console.log(`Connecting to database: ${config.MONGODB_URI}`);
+
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    console.log('Connected to database');
+  })
+  .catch((error) => {
+    console.log(`Error connecting to database: ${error.message}`);
+  });
 
 app.use(cors());
 app.use(express.static('dist'));
