@@ -70,6 +70,8 @@ const blogWithMostLikes = {
   likes: 12,
 };
 
+console.log('test');
+
 module.exports = {
   testBlogs,
   singleTestBlogInArray,
