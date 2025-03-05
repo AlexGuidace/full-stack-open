@@ -52,7 +52,7 @@ const testBlogs = [
   },
 ];
 
-const singleTestBlog = [
+const singleTestBlogInArray = [
   {
     _id: '5a422aa71b54a676234d17f8',
     title: 'Go To Statement Considered Harmful',
@@ -63,7 +63,15 @@ const singleTestBlog = [
   },
 ];
 
+const blogWithMostLikes = {
+  title: 'Canonical string reduction',
+  author: 'Edsger W. Dijkstra',
+  url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+  likes: 12,
+};
+
 module.exports = {
   testBlogs,
-  singleTestBlog,
+  singleTestBlogInArray,
+  blogWithMostLikes,
 };
