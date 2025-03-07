@@ -1,4 +1,4 @@
-// blogs data gotten from: https://github.com/fullstack-hy2020/misc/blob/master/blogs_for_test.md.
+// Blogs data below gotten from: https://github.com/fullstack-hy2020/misc/blob/master/blogs_for_test.md.
 
 // Total # of likes in this list is 36.
 const testBlogs = [
@@ -8,6 +8,8 @@ const testBlogs = [
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
+    // I believe the term 'blogs' used in the FSO instructions for Exercises 4.6* and 4.7* is short for 'blog posts'.
+    blogPosts: 9,
     __v: 0,
   },
   {
@@ -16,6 +18,7 @@ const testBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
+    blogPosts: 3,
     __v: 0,
   },
   {
@@ -24,6 +27,7 @@ const testBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     likes: 12,
+    blogPosts: 15,
     __v: 0,
   },
   {
@@ -32,6 +36,7 @@ const testBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
     likes: 10,
+    blogPosts: 15,
     __v: 0,
   },
   {
@@ -40,6 +45,7 @@ const testBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
     likes: 0,
+    blogPosts: 0,
     __v: 0,
   },
   {
@@ -48,6 +54,7 @@ const testBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
     likes: 2,
+    blogPosts: 3,
     __v: 0,
   },
 ];
@@ -59,6 +66,7 @@ const singleTestBlogInArray = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
+    blogPosts: 3,
     __v: 0,
   },
 ];
@@ -68,10 +76,17 @@ const blogWithMostLikes = {
   author: 'Edsger W. Dijkstra',
   url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
   likes: 12,
+  blogPosts: 15,
+};
+
+const blogWithMostPosts = {
+  author: 'Robert C. Martin',
+  blogPosts: 15,
 };
 
 module.exports = {
   testBlogs,
   singleTestBlogInArray,
   blogWithMostLikes,
+  blogWithMostPosts,
 };

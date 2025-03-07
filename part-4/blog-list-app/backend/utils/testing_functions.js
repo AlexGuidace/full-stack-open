@@ -1,3 +1,5 @@
+const sortBy = require('lodash/sortBy');
+
 // Calculates and returns the number of total likes in a list of blogs.
 const totalLikes = (blogs) => {
   return blogs.reduce((sum, currentBlog) => sum + currentBlog.likes, 0);
@@ -26,4 +28,20 @@ const favoriteBlog = (blogs) => {
   return favoriteBlogResult;
 };
 
-module.exports = { totalLikes, favoriteBlog };
+// Using Lodash library here. This returns the author who has the largest amount of blog posts on their blog.
+const mostBlogs = (blogs) => {
+  // Sort blogs based on their blogPost count, in ascending order using the Lodash method _.sortBy().
+  const sortedBlogs = sortBy(blogs, ['blogPosts']);
+  const blogWithMostPosts = sortedBlogs[sortedBlogs.length - 1];
+
+  // Remove unnecessary data from blogWithMostPosts for object equality comparison in tests.
+  const fieldsToDelete = ['_id', 'title', 'url', 'likes', '__v'];
+
+  fieldsToDelete.forEach((field) => {
+    delete blogWithMostPosts[field];
+  });
+
+  return blogWithMostPosts;
+};
+
+module.exports = { totalLikes, favoriteBlog, mostBlogs };
