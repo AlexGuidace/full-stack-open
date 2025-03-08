@@ -84,9 +84,15 @@ const blogWithMostPosts = {
   blogPosts: 15,
 };
 
+const authorWithMostLikes = {
+  author: 'Edsger W. Dijkstra',
+  likes: 12,
+};
+
 module.exports = {
   testBlogs,
   singleTestBlogInArray,
   blogWithMostLikes,
   blogWithMostPosts,
+  authorWithMostLikes,
 };

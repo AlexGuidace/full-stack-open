@@ -44,4 +44,20 @@ const mostBlogs = (blogs) => {
   return blogWithMostPosts;
 };
 
-module.exports = { totalLikes, favoriteBlog, mostBlogs };
+// Using Lodash library here. This returns the author who has the largest amount of likes on their blog posts and the like count. Follows the same logic as mostBlogs.
+const mostLikes = (blogs) => {
+  // Sort blogs based on their like count, in ascending order using the Lodash method _.sortBy().
+  const sortedBlogs = sortBy(blogs, ['likes']);
+  const authorWithMostLikes = sortedBlogs[sortedBlogs.length - 1];
+
+  // Remove unnecessary data from authorWithMostLikes for object equality comparison in tests.
+  const fieldsToDelete = ['_id', 'title', 'url', 'blogPosts', '__v'];
+
+  fieldsToDelete.forEach((field) => {
+    delete authorWithMostLikes[field];
+  });
+
+  return authorWithMostLikes;
+};
+
+module.exports = { totalLikes, favoriteBlog, mostBlogs, mostLikes };
