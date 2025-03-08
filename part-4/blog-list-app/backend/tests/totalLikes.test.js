@@ -3,7 +3,7 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 
 const { testBlogs, singleTestBlogInArray } = require('../utils/test_data');
-const { totalLikes } = require('../utils/testing_functions');
+const { totalLikes } = require('../utils/list_helper');
 
 describe('Total likes', () => {
   test('of empty list is zero', () => {

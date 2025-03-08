@@ -2,7 +2,7 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 
 const { testBlogs, blogWithMostLikes } = require('../utils/test_data');
-const { favoriteBlog } = require('../utils/testing_functions');
+const { favoriteBlog } = require('../utils/list_helper');
 
 describe('Favorite blog', () => {
   test('calculates correctly to return the blog with the most likes', () => {
