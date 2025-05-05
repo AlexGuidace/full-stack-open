@@ -4,33 +4,29 @@ const Blog = require('../models/blog');
 
 // All of our Blog routes/endpoints.
 
-blogsRouter.get('/', (request, response, next) => {
-  Blog.find({})
-    .then((blogs) => {
-      response.json(blogs);
-    })
-    .catch((error) => next(error));
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({});
+  response.json(blogs);
 });
 
 // Check to see if a blog exists, based on URL.
-blogsRouter.get('/:encodedUrl', (request, response, next) => {
+blogsRouter.get('/:encodedUrl', async (request, response) => {
   // Decode the URL from the previous encoding on the frontend. We need to decode it for checking here because the raw URL is what is saved in the DB when we initially POST it to the DB.
   const { encodedUrl } = request.params;
   const decodedUrl = decodeURIComponent(encodedUrl);
 
-  Blog.exists({ url: decodedUrl })
-    .then((result) => {
-      if (result) {
-        const id = String(result._id);
-        response.json(id);
-      } else {
-        response.json(null);
-      }
-    })
-    .catch((error) => next(error));
+  // Blog.exists() returns a document object with an _id if the blog exists.
+  const matchingId = await Blog.exists({ url: decodedUrl });
+
+  if (matchingId) {
+    const id = String(matchingId._id);
+    response.json(id);
+  } else {
+    response.json(null);
+  }
 });
 
-blogsRouter.post('/', (request, response, next) => {
+blogsRouter.post('/', async (request, response) => {
   const body = request.body;
 
   // Assign body a field of 'likes' and give body.likes a numerical value based on whether the "Do you love this blog?" checkbox was checked or not.
@@ -48,23 +44,23 @@ blogsRouter.post('/', (request, response, next) => {
     likes: body.likes,
   });
 
-  blog
-    .save()
-    .then((result) => {
-      response.status(201).json(result);
-    })
-    .catch((error) => next(error));
+  const savedBlog = await blog.save();
+
+  response.status(201).json(savedBlog);
 });
 
-blogsRouter.put('/:id', (request, response, next) => {
+// Updates number of likes by 1 on an existing blog.
+blogsRouter.put('/:id', async (request, response) => {
   const { id } = request.params;
 
   // Use MongoDB $inc operator to increment the value of the likes field by 1 because the checkbox was checked on the frontend for this submission.
-  Blog.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true })
-    .then((result) => {
-      response.json(result);
-    })
-    .catch((error) => next(error));
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    id,
+    { $inc: { likes: 1 } },
+    { new: true }
+  );
+
+  response.json(updatedBlog);
 });
 
 module.exports = blogsRouter;
