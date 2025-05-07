@@ -9,7 +9,7 @@ const blogSchema = mongoose.Schema({
 });
 
 // Transforms a blog document into JSON, which is transformed into a plain JS object, whenever a blog document is sent back to the client from the database. The transformation adds an id field, and deletes the _id and __v fields from the object, for a cleaner presentation that can be used in the UI.
-blogSchema.set('toJson', {
+blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;

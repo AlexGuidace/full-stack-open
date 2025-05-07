@@ -27,6 +27,17 @@ describe('Tests for the Blogs API:', () => {
     assert.strictEqual(response.body.length, testHelper.initialBlogs.length);
   });
 
+  test('All Blog objects returned to the client from the API contain a property of `id` for their unique identifier, instead of `_id`', async () => {
+    const response = await api.get('/api/blogs');
+    const blogs = response.body;
+
+    // If every blog object checked has a property of 'id', the assertion is true.
+    assert.strictEqual(
+      blogs.every((blog) => Object.hasOwn(blog, 'id')),
+      true
+    );
+  });
+
   after(async () => {
     await mongoose.connection.close();
   });

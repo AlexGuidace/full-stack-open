@@ -15,7 +15,7 @@ blogsRouter.get('/:encodedUrl', async (request, response) => {
   const { encodedUrl } = request.params;
   const decodedUrl = decodeURIComponent(encodedUrl);
 
-  // Blog.exists() returns a document object with an _id if the blog exists.
+  // Blog.exists() returns a document object with an _id field only, if the blog exists.
   const matchingId = await Blog.exists({ url: decodedUrl });
 
   if (matchingId) {
