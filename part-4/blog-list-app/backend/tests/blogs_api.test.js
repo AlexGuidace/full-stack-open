@@ -74,6 +74,37 @@ describe('Tests for the Blogs API:', () => {
     );
   });
 
+  // NOTE: The course asks to test that a missing 'likes' property defaults to 0.
+  // In my implementation, that logic is handled via frontend checkbox input and backend route logic.
+  // The backend POST route always explicitly sets 'likes' based on the value of 'checkbox':
+  //
+  //   if (body.checkbox === 'on') {
+  //     body.likes = 1;
+  //   } else {
+  //     body.likes = 0;
+  //   }
+  //
+  // So, the 'likes' property is never actually 'missing' from new blog posts; it's always created based on user input. This test reflects that behavior by submitting
+  // a blog without a checkbox (simulating an unchecked box), and confirming that 'likes' is 0.
+  test('A value of 0 is given to the `likes` property of a newly created blog if the `Do you love this blog` box is unchecked.', async () => {
+    const newBlog = {
+      title: 'Philosophy Talk',
+      author: 'Stanford University',
+      url: 'https://www.philosophytalk.org/blog-classic',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAfterSubmission = await testHelper.getBlogsInDb();
+
+    // Verify that the saved blog now has 0 likes, based on the user not checking the "Do you love this blog" checkbox in the UI.
+    assert.strictEqual(blogsAfterSubmission[2].likes, 0);
+  });
+
   after(async () => {
     await mongoose.connection.close();
   });
