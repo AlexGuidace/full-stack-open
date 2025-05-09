@@ -38,6 +38,42 @@ describe('Tests for the Blogs API:', () => {
     );
   });
 
+  test('A new, valid blog can be added to the database via POST', async () => {
+    const newBlog = {
+      title: 'Philosophy Talk',
+      author: 'Stanford University',
+      url: 'https://www.philosophytalk.org/blog-classic',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAfterSubmission = await testHelper.getBlogsInDb();
+
+    // Verify that the number of blogs in the database increased by one after newBlog was submitted.
+    assert.strictEqual(
+      blogsAfterSubmission.length,
+      testHelper.initialBlogs.length + 1
+    );
+
+    // Verify contents of saved object are the same as the submitted newBlog object.
+    assert.deepStrictEqual(
+      {
+        title: blogsAfterSubmission[2].title,
+        author: blogsAfterSubmission[2].author,
+        url: blogsAfterSubmission[2].url,
+      },
+      {
+        title: newBlog.title,
+        author: newBlog.author,
+        url: newBlog.url,
+      }
+    );
+  });
+
   after(async () => {
     await mongoose.connection.close();
   });

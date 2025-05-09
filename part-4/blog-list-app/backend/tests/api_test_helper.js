@@ -15,10 +15,10 @@ const initialBlogs = [
   },
 ];
 
-const blogsInDb = async () => {
+const getBlogsInDb = async () => {
   const blogs = await Blog.find({});
   // Format each blog to a usable format.
   return blogs.map((note) => note.toJSON());
 };
 
-module.exports = { initialBlogs, blogsInDb };
+module.exports = { initialBlogs, getBlogsInDb };
