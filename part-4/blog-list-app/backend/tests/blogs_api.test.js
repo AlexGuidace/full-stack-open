@@ -86,7 +86,7 @@ describe('Tests for the Blogs API:', () => {
   //
   // So, the 'likes' property is never actually 'missing' from new blog posts; it's always created based on user input. This test reflects that behavior by submitting
   // a blog without a checkbox (simulating an unchecked box), and confirming that 'likes' is 0.
-  test('A value of 0 is given to the `likes` property of a newly created blog if the `Do you love this blog` box is unchecked.', async () => {
+  test('A value of 0 is given to the `likes` property of a newly created blog if the `Do you love this blog` box is unchecked', async () => {
     const newBlog = {
       title: 'Philosophy Talk',
       author: 'Stanford University',
@@ -103,6 +103,21 @@ describe('Tests for the Blogs API:', () => {
 
     // Verify that the saved blog now has 0 likes, based on the user not checking the "Do you love this blog" checkbox in the UI.
     assert.strictEqual(blogsAfterSubmission[2].likes, 0);
+  });
+
+  test('The backend responds with the status code `400 Bad Request` if the `title` or `url` properties are missing when submitting a new blog via POST', async () => {
+    const blogWithoutTitle = {
+      author: 'Stanford University',
+      url: 'https://www.philosophytalk.org/blog-classic',
+    };
+
+    const blogWithoutUrl = {
+      title: 'Philosophy Talk',
+      author: 'Stanford University',
+    };
+
+    await api.post('/api/blogs').send(blogWithoutTitle).expect(400);
+    await api.post('/api/blogs').send(blogWithoutUrl).expect(400);
   });
 
   after(async () => {
