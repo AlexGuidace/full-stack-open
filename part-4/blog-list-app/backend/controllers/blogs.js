@@ -60,7 +60,7 @@ blogsRouter.put('/:id', async (request, response) => {
     { new: true }
   );
 
-  response.json(updatedBlog);
+  response.status(200).json(updatedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
