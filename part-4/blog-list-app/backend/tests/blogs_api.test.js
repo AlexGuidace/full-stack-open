@@ -120,6 +120,23 @@ describe('Tests for the Blogs API:', () => {
     await api.post('/api/blogs').send(blogWithoutUrl).expect(400);
   });
 
+  test('A blog was sucessfully removed from the DB via DELETE', async () => {
+    const initialBlogs = await testHelper.getBlogsInDb();
+    const blogToDelete = initialBlogs[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAfterDeletion = await testHelper.getBlogsInDb();
+
+    assert.strictEqual(blogsAfterDeletion.length, initialBlogs.length - 1);
+
+    const titlesOfBlogsAfterDeletion = blogsAfterDeletion.map(
+      (blog) => blog.title
+    );
+
+    assert(!titlesOfBlogsAfterDeletion.includes(blogToDelete.title));
+  });
+
   after(async () => {
     await mongoose.connection.close();
   });
