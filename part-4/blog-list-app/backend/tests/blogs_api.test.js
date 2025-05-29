@@ -13,7 +13,6 @@ const testHelper = require('./api_test_helper');
 const api = supertest(app);
 
 beforeEach(async () => {
-  // test
   await Blog.deleteMany({});
   await Blog.insertMany(testHelper.initialBlogs);
 });
