@@ -8,7 +8,7 @@ const Blog = require('../models/blog');
 const testHelper = require('./api_test_helper');
 
 // Write tests and only test the ones that you are currently working on, per the 'NB' provided in the FSO spec. Doing so keeps the feedback loop fast.
-// Command for testing this module using this method: npm test -- tests/blogs_api.test.js
+// Command for testing this module using this method: npm test -- tests/blog_api.test.js
 
 const api = supertest(app);
 
