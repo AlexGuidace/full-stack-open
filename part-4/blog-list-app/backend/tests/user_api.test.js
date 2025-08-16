@@ -1,5 +1,4 @@
-const bcrypt = require('bcrypt');
-const { test, describe, beforeEach, after } = require('node:test');
+const { test, describe, after } = require('node:test');
 const assert = require('node:assert');
 const mongoose = require('mongoose');
 const supertest = require('supertest');
