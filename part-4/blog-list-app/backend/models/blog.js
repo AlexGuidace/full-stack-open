@@ -6,6 +6,11 @@ const blogSchema = mongoose.Schema({
   author: { type: String, required: true },
   url: { type: String, required: true },
   likes: { type: Number, required: true },
+  // References the objectId of any user inside the DB User collection. By having it here, we can do things like get a user's info from the DB.
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 // Transforms a blog document into JSON, which is transformed into a plain JS object, whenever a blog document is sent back to the client from the database. The transformation adds an id field, and deletes the _id and __v fields from the object, for a cleaner presentation that can be used in the UI.
