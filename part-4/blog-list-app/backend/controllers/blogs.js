@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const blogsRouter = express.Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -39,9 +39,9 @@ blogsRouter.post('/', async (request, response) => {
     body.likes = 0;
   }
 
-  // Compare request token signature to our SECRET key signature (what the original token was signed with when the user was logged in). If there is a match, proceed with blog creation.
+  // Compare request token signature (token was attached to the request body (request.token) from our middleware file before entering this route) to our SECRET key signature (what the original token was signed with when the user was logged in). If there is a match, proceed with blog creation.
   // payload = user data.
-  const payload = jwt.verify(getTokenFromRequest(request), process.env.SECRET);
+  const payload = jwt.verify(request.token, process.env.SECRET);
   if (!payload.id) {
     return response.status(401).json({ error: 'Token invalid.' });
   }
@@ -88,17 +88,5 @@ blogsRouter.delete('/:id', async (request, response) => {
   await Blog.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
-
-////////// Helper Functions. //////////
-
-// Get JWT from user request.
-const getTokenFromRequest = (request) => {
-  const authorization = request.get('authorization');
-  if (authorization && authorization.startsWith('Bearer ')) {
-    // Replace 'Bearer' with an empty string, because we only want the JWT token string from the request.
-    return authorization.replace('Bearer ', '');
-  }
-  return null;
-};
 
 module.exports = blogsRouter;

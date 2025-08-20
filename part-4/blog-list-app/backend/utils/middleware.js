@@ -1,5 +1,4 @@
-// Module for custom middleware.
-
+// Module for custom middleware functions that handle request and response objects.
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
@@ -34,8 +33,22 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+// Get JWT from user request.
+// (Does not include next() as the course instructs, due to implementation of 'express-async-errors' library in app.js, which removes the need to write next().)
+const getAuthTokenFromRequest = (request, response, next) => {
+  const authorization = request.get('authorization');
+  if (authorization && authorization.startsWith('Bearer ')) {
+    // Replace 'Bearer' with an empty string, because we only want the JWT token string from the request, and assign the JWT in a token field we've defined inside the request object.
+    request.token = authorization.replace('Bearer ', '');
+  }
+
+  // Pass control to the next middlewhere in app.js after this function executes.
+  next();
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  getAuthTokenFromRequest,
 };
