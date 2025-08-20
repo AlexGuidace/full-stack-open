@@ -21,7 +21,7 @@ const errorHandler = (error, request, response, next) => {
     error.message
   );
 
-  if (error.name === 'CastError') {
+  if (error.names === 'CastError') {
     return response
       .status(400)
       .send({ error: 'A malformatted id was found in the URL.' });
