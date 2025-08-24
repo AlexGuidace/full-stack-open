@@ -1,4 +1,4 @@
-// Library that allows us to eliminate try-catch blocks in blogs.js. Async errors are automatically passed to error-handling middleware through this library.
+// Library that allows us to eliminate try-catch blocks in blogs.js. Async route errors are automatically passed to error-handling middleware through this library.
 require('express-async-errors');
 // Configuration module.
 const config = require('./utils/config');

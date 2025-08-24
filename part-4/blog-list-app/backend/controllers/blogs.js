@@ -85,8 +85,32 @@ blogsRouter.put('/:id', async (request, response) => {
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id);
-  response.status(204).end();
+  // Verify that the user is using an authorized token.
+  // payload = user data
+  const payload = jwt.verify(request.token, process.env.SECRET);
+
+  const blogToBeDeleted = await Blog.findById(request.params.id);
+  console.log(blogToBeDeleted);
+
+  if (!blogToBeDeleted) {
+    const error = new Error(
+      'Delete did not happen because blog does not exist.'
+    );
+    error.name = 'BlogDoesNotExistError';
+    throw error;
+  }
+
+  // Compare the user ID in the blog to the user ID making the DELETE request. If they match, the request has been validated and we delete the blog. 'blogToBeDeleted.user' contains only the ObjectId of the user, and we convert that object to a string below for comparison purposes.
+  if (blogToBeDeleted.user.toString() === payload.id) {
+    await Blog.findByIdAndDelete(request.params.id);
+    response.status(204).end();
+  } else {
+    const error = new Error(
+      'Delete forbidden because the current user does not own this blog.'
+    );
+    error.name = 'CurrentUserNotOwnerOfBlogError';
+    throw error;
+  }
 });
 
 module.exports = blogsRouter;
