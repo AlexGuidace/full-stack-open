@@ -1,8 +1,8 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const blogsRouter = express.Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const middleware = require('../utils/middleware');
 
 // All of our Blog routes/endpoints.
 
@@ -28,47 +28,44 @@ blogsRouter.get('/:encodedUrl', async (request, response) => {
   }
 });
 
-blogsRouter.post('/', async (request, response) => {
-  const body = request.body;
+blogsRouter.post(
+  '/',
+  middleware.verifyAndGetUserFromRequest,
+  async (request, response) => {
+    const body = request.body;
 
-  // Assign body a field of 'likes' and give body.likes a numerical value based on whether the "Do you love this blog?" checkbox was checked or not.
-  // NOTE: If a checkbox is checked, the value of the checkbox will be set to a string of "on" by the browser when the form is submitted (and will be part of request.body above). If the value is "on", then we have a boolean of true. If it's not checked, the checkbox has a value of null.
-  if (body.checkbox === 'on') {
-    body.likes = 1;
-  } else {
-    body.likes = 0;
+    // Assign body a field of 'likes' and give body.likes a numerical value based on whether the "Do you love this blog?" checkbox was checked or not.
+    // NOTE: If a checkbox is checked, the value of the checkbox will be set to a string of "on" by the browser when the form is submitted (and will be part of request.body above). If the value is "on", then we have a boolean of true. If it's not checked, the checkbox has a value of null.
+    if (body.checkbox === 'on') {
+      body.likes = 1;
+    } else {
+      body.likes = 0;
+    }
+
+    // Get the correct user. Before we entered this route, request.user was assigned value through the middleware function: verifyAndGetUserFromRequest.
+    const user = await User.findById(request.user.id);
+
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: 'User ID is missing or not valid.' });
+    }
+
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+      user: user._id,
+    });
+
+    const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog._id);
+    await user.save();
+
+    response.status(201).json(savedBlog);
   }
-
-  // Compare request token signature (token was attached to the request body (request.token) from our middleware file before entering this route) to our SECRET key signature (what the original token was signed with when the user was logged in). If there is a match, proceed with blog creation.
-  // payload = user data.
-  const payload = jwt.verify(request.token, process.env.SECRET);
-  if (!payload.id) {
-    return response.status(401).json({ error: 'Token invalid.' });
-  }
-
-  // Get the correct user.
-  const user = await User.findById(payload.id);
-
-  if (!user) {
-    return response
-      .status(400)
-      .json({ error: 'User ID is missing or not valid.' });
-  }
-
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-    user: user._id,
-  });
-
-  const savedBlog = await blog.save();
-  user.blogs = user.blogs.concat(savedBlog._id);
-  await user.save();
-
-  response.status(201).json(savedBlog);
-});
+);
 
 // Updates number of likes by 1 on an existing blog.
 blogsRouter.put('/:id', async (request, response) => {
@@ -84,33 +81,33 @@ blogsRouter.put('/:id', async (request, response) => {
   response.status(200).json(updatedBlog);
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
-  // Verify that the user is using an authorized token.
-  // payload = user data
-  const payload = jwt.verify(request.token, process.env.SECRET);
+blogsRouter.delete(
+  '/:id',
+  middleware.verifyAndGetUserFromRequest,
+  async (request, response) => {
+    const blogToBeDeleted = await Blog.findById(request.params.id);
+    console.log(blogToBeDeleted);
 
-  const blogToBeDeleted = await Blog.findById(request.params.id);
-  console.log(blogToBeDeleted);
+    if (!blogToBeDeleted) {
+      const error = new Error(
+        'Delete did not happen because blog does not exist.'
+      );
+      error.name = 'BlogDoesNotExistError';
+      throw error;
+    }
 
-  if (!blogToBeDeleted) {
-    const error = new Error(
-      'Delete did not happen because blog does not exist.'
-    );
-    error.name = 'BlogDoesNotExistError';
-    throw error;
+    // Compare the user ID in the blog to the user ID making the DELETE request. If they match, the request has been validated and we delete the blog. 'blogToBeDeleted.user' contains only the ObjectId of the user, and we convert that object to a string below for comparison purposes.
+    if (blogToBeDeleted.user.toString() === request.user.id) {
+      await Blog.findByIdAndDelete(request.params.id);
+      response.status(204).end();
+    } else {
+      const error = new Error(
+        'Delete forbidden because the current user does not own this blog.'
+      );
+      error.name = 'CurrentUserNotOwnerOfBlogError';
+      throw error;
+    }
   }
-
-  // Compare the user ID in the blog to the user ID making the DELETE request. If they match, the request has been validated and we delete the blog. 'blogToBeDeleted.user' contains only the ObjectId of the user, and we convert that object to a string below for comparison purposes.
-  if (blogToBeDeleted.user.toString() === payload.id) {
-    await Blog.findByIdAndDelete(request.params.id);
-    response.status(204).end();
-  } else {
-    const error = new Error(
-      'Delete forbidden because the current user does not own this blog.'
-    );
-    error.name = 'CurrentUserNotOwnerOfBlogError';
-    throw error;
-  }
-});
+);
 
 module.exports = blogsRouter;

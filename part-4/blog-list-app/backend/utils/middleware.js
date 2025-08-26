@@ -1,4 +1,5 @@
 // Module for custom middleware functions that handle request and response objects.
+const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
@@ -8,6 +9,7 @@ const requestLogger = (request, response, next) => {
   logger.info('Body: ', request.body);
   logger.info('-------------------------------');
 
+  // Pass control to the next middlewhere in app.js after this function executes.
   next();
 };
 
@@ -19,7 +21,16 @@ const getAuthTokenFromRequest = (request, response, next) => {
     request.token = authorization.replace('Bearer ', '');
   }
 
-  // Pass control to the next middlewhere in app.js after this function executes.
+  next();
+};
+
+// Verify that the user is using an authorized token and assign the user data to a user field on the request.
+const verifyAndGetUserFromRequest = (request, response, next) => {
+  // Compare request token signature to our app's SECRET key signature (what the original token was signed with when the user was logged in) to verify the user.
+  // payload = user data.
+  const payload = jwt.verify(request.token, process.env.SECRET);
+  request.user = payload;
+
   next();
 };
 
@@ -43,13 +54,11 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message });
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({
-      error:
-        'Delete did not happen because the authentication token was invalid.',
+      error: 'Action not completed because token was invalid.',
     });
   } else if (error.name === 'TokenExpiredError') {
     return response.status(401).json({
-      error:
-        'Delete did not happen because the authentication token was expired.',
+      error: 'Action not completed because token was expired.',
     });
   } else if (error.name === 'BlogDoesNotExistError') {
     return response.status(404).json({
@@ -70,4 +79,5 @@ module.exports = {
   unknownEndpoint,
   errorHandler,
   getAuthTokenFromRequest,
+  verifyAndGetUserFromRequest,
 };
