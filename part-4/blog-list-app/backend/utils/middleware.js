@@ -5,7 +5,9 @@ const logger = require('./logger');
 const requestLogger = (request, response, next) => {
   logger.info('-------HTTP REQUEST INFO-------');
   logger.info('Method: ', request.method);
+  logger.info('');
   logger.info('Path: ', request.path);
+  logger.info('');
   logger.info('Body: ', request.body);
   logger.info('-------------------------------');
 
