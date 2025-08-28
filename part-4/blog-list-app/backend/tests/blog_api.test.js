@@ -48,9 +48,19 @@ describe('Tests for the Blogs API:', () => {
         url: 'https://www.philosophytalk.org/blog-classic',
       };
 
+      // Log a user in to get a valid auth token.
+      const loginResponse = await api
+        .post('/api/login')
+        .send(testHelper.testUser)
+        .expect(200);
+
+      const authToken = loginResponse.body.token;
+
+      // Make a POST request to create a new, valid blog.
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set('Authorization', `Bearer ${authToken}`)
         .expect(201)
         .expect('Content-Type', /application\/json/);
 

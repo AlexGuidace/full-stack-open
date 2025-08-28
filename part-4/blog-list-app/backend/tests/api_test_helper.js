@@ -24,6 +24,9 @@ const getBlogsInDb = async () => {
   return blogs.map((note) => note.toJSON());
 };
 
+// Used to log in a user in the creation of a new, valid blog.
+const testUser = { username: 'Alex23', password: '123' };
+
 //////////********** User helpers. **********//////////
 
 const getUsersInDb = async () => {
@@ -32,4 +35,4 @@ const getUsersInDb = async () => {
   return users.map((user) => user.toJSON());
 };
 
-module.exports = { initialBlogs, getBlogsInDb, getUsersInDb };
+module.exports = { initialBlogs, testUser, getBlogsInDb, getUsersInDb };
