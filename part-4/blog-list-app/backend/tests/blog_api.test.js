@@ -5,16 +5,31 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const testHelper = require('./api_test_helper');
 
 // Write tests and only test the ones that you are currently working on, per the 'NB' provided in the FSO spec. Doing so keeps the feedback loop fast.
 // Command for testing this module using this method: npm test -- tests/blog_api.test.js
 
 const api = supertest(app);
+let authToken;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(testHelper.initialBlogs);
+
+  await User.deleteMany({});
+
+  // Create a new test user.
+  await api.post('/api/users').send(testHelper.testUser).expect(201);
+
+  // Log that user in to get a valid authentication token for subsequent API requests.
+  const loginResponse = await api
+    .post('/api/login')
+    .send(testHelper.testUser)
+    .expect(200);
+
+  authToken = loginResponse.body.token;
 });
 
 describe('Tests for the Blogs API:', () => {
@@ -47,14 +62,6 @@ describe('Tests for the Blogs API:', () => {
         author: 'Stanford University',
         url: 'https://www.philosophytalk.org/blog-classic',
       };
-
-      // Log a user in to get a valid auth token.
-      const loginResponse = await api
-        .post('/api/login')
-        .send(testHelper.testUser)
-        .expect(200);
-
-      const authToken = loginResponse.body.token;
 
       // Make a POST request to create a new, valid blog.
       await api
@@ -97,9 +104,9 @@ describe('Tests for the Blogs API:', () => {
     //     body.likes = 0;
     //   }
     //
-    // So, the 'likes' property is never actually 'missing' from new blog posts; it's always created based on user input. This test reflects that behavior by submitting
-    // a blog without a checkbox (simulating an unchecked box), and confirming that 'likes' is 0.
+    // So, the 'likes' property is never actually 'missing' from new blog posts; it's always created based on user input. This test reflects that behavior by submitting a blog without a checkbox (simulating an unchecked box), and confirming that 'likes' is 0.
     test('A value of 0 is given to the `likes` property of a newly created blog if the `Do you love this blog` box is unchecked', async () => {
+      // Submitting the blog without a checkbox means body.checkbox will be undefined; body.likes will thus be set to 0, according to our route logic shown in the above clarifying 'NOTE'.
       const newBlog = {
         title: 'Philosophy Talk',
         author: 'Stanford University',
@@ -109,12 +116,13 @@ describe('Tests for the Blogs API:', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set('Authorization', `Bearer ${authToken}`)
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
       const blogsAfterSubmission = await testHelper.getBlogsInDb();
 
-      // Verify that the saved blog now has 0 likes, based on the user not checking the "Do you love this blog" checkbox in the UI.
+      // Verify that the saved blog now has 0 likes, based on the user not checking the "Do you love this blog" checkbox in the UI. There were 2 blogs already in the database prior to adding this newBlog.
       assert.strictEqual(blogsAfterSubmission[2].likes, 0);
     });
 
