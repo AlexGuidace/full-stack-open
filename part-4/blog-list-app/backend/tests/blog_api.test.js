@@ -94,6 +94,24 @@ describe('Tests for the Blogs API:', () => {
       );
     });
 
+    test('Adding a new blog fails with a `401 Unauthorized` status code if a proper authentication token is not provided by a user', async () => {
+      const newBlog = {
+        title: 'Philosophy Talk',
+        author: 'Stanford University',
+        url: 'https://www.philosophytalk.org/blog-classic',
+      };
+
+      // Make a POST request without providing an auth token.
+      await api.post('/api/blogs').send(newBlog).expect(401);
+
+      // Verify that the number of blogs in the database did not change after newBlog was submitted.
+      const blogsAfterSubmission = await testHelper.getBlogsInDb();
+      assert.strictEqual(
+        blogsAfterSubmission.length,
+        testHelper.initialBlogs.length
+      );
+    });
+
     // NOTE: The course asks to test that a missing 'likes' property defaults to 0.
     // In my implementation, that logic is handled via frontend checkbox input and backend route logic.
     // The backend POST route always explicitly sets 'likes' based on the value of 'checkbox':
