@@ -154,13 +154,39 @@ describe('Tests for the Blogs API:', () => {
   describe('DELETE requests', () => {
     test('A blog was sucessfully removed from the DB via DELETE', async () => {
       const initialBlogs = await testHelper.getBlogsInDb();
-      const blogToDelete = initialBlogs[0];
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+      // Create a new blog in the DB with a valid user attached to it.
+      const newBlog = {
+        title: 'Philosophy Talk',
+        author: 'Stanford University',
+        url: 'https://www.philosophytalk.org/blog-classic',
+      };
 
+      const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+
+      // Check to see that the new blog was added to the DB.
+      const blogsAfterCreation = await testHelper.getBlogsInDb();
+      assert.strictEqual(blogsAfterCreation.length, initialBlogs.length + 1);
+
+      // Delete the new blog.
+      const blogToDelete = response.body;
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(204);
+
+      // Check to see that the blog was removed from the DB.
       const blogsAfterDeletion = await testHelper.getBlogsInDb();
-
-      assert.strictEqual(blogsAfterDeletion.length, initialBlogs.length - 1);
+      assert.strictEqual(
+        blogsAfterDeletion.length,
+        blogsAfterCreation.length - 1
+      );
 
       const titlesOfBlogsAfterDeletion = blogsAfterDeletion.map(
         (blog) => blog.title
