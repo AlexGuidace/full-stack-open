@@ -1,7 +1,7 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 # Before sending this request, update and copy-paste a new token here by running login.rest first.
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZXhHIiwiaWQiOiI2ODlhN2QyNDY4NDlmY2Y5YzBmZTMxYTIiLCJpYXQiOjE3NTYzMTk4NTEsImV4cCI6MTc1NjMyMzQ1MX0.wrrr2ZXcTXAf_tiV5uVhLzIqUitf1cvIbAUCcb1hUFU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFsZXhHIiwiaWQiOiI2ODlhN2QyNDY4NDlmY2Y5YzBmZTMxYTIiLCJpYXQiOjE3NTY1NjExOTMsImV4cCI6MTc1NjU2NDc5M30.xW5_KHTmjmcuRzn5IIBjWQ3Zrf2rIS47qlBMv9cfxbo
 
 {
     "title": "!!!!!!!2 Philosophy Talk",

@@ -137,8 +137,17 @@ describe('Tests for the Blogs API:', () => {
         author: 'Stanford University',
       };
 
-      await api.post('/api/blogs').send(blogWithoutTitle).expect(400);
-      await api.post('/api/blogs').send(blogWithoutUrl).expect(400);
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutTitle)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(400);
+
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .set('Authorization', `Bearer ${authToken}`)
+        .expect(400);
     });
   });
 
@@ -167,7 +176,10 @@ describe('Tests for the Blogs API:', () => {
       // Initially, this Pokemon blog object has 16 likes.
       const blogToUpdate = initialBlogs[0];
 
-      await api.put(`/api/blogs/${blogToUpdate.id}`).expect(200);
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
 
       const updatedBlogs = await testHelper.getBlogsInDb();
       const updatedBlog = updatedBlogs[0];
