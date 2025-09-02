@@ -4,9 +4,9 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
 import BlogList from './components/BlogList';
+import SubmissionForm from './components/SubmissionForm';
 import LoginForm from './components/LoginForm';
 import './App.css';
-import SubmissionForm from './components/SubmissionForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
