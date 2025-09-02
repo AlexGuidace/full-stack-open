@@ -1,14 +1,31 @@
 #submissionForm {
-  display:flex;
+  display: flex;
   flex-direction: column;
   border: 1px black solid;
   max-width: 800px;
   padding: 1.5rem;
 }
 
+#submissionForm input:not([type="checkbox"]) {
+  width: 700px;
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  border: 1px black solid;
+  max-width: 330px;
+  padding: 1.5rem;
+}
+
+#loginForm input {
+  width: 220px;
+}
+
 #checkbox-input {
    width: auto;
    margin-right: 10px;
+   margin-left: 0px;
    margin-bottom: 15px;
 }
 
@@ -23,6 +40,16 @@
    padding-bottom: 3px;
 }
 
+.error {
+   color: blue;
+   background: rgb(230, 230, 230);
+   font-size: 20px;
+   border-style: solid;
+   border-radius: 5px;
+   padding: 10px;
+   margin-bottom: 20px;
+ }
+
 h2 {
    margin-top: 0px;
 }
@@ -31,10 +58,6 @@ ul {
    padding-left: 0px;
 }
 
-label {
-   margin-right: 1rem;
-}
-
 input {
-   width: 700px;
+   margin-left: .5rem;
 }

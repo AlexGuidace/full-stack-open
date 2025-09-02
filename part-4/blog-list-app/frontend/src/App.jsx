@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 
 import blogService from './services/blogs';
-import Blog from './components/blog';
+import loginService from './services/login';
+import Notification from './components/Notification';
+import BlogList from './components/BlogList';
+import LoginForm from './components/LoginForm';
 import './App.css';
+import SubmissionForm from './components/SubmissionForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => {
@@ -61,50 +69,55 @@ const App = () => {
     event.target.reset();
   };
 
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      // Log user in and get token, username, name back.
+      const user = await loginService.login({ username, password });
+      setUser(user);
+      setUsername('');
+      setPassword('');
+
+      console.log('Yippeeee... user logged in!');
+      console.log('USER: ', user);
+    } catch {
+      setErrorMessage('Incorrect credentials provided. Please try again.');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const loginFormProps = {
+    username,
+    password,
+    setUsername,
+    setPassword,
+    handleLogin,
+  };
+
   return (
     <div>
       <h1>List of Random Users&apos; Favorite Blogs</h1>
-      <ul>
-        {blogs.length > 0 ? (
-          blogs.map((blog) => <Blog key={blog.id} blog={blog} />)
-        ) : (
-          <h3>(No blogs in the bloglist yet)</h3>
-        )}
-      </ul>
-      <form id="submissionForm" onSubmit={addBlog}>
-        <h2>New Favorite Blog Submission Form</h2>
-        <div className="inputDiv">
-          <label htmlFor="title">Title:</label>
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            id="title"
-            required
-          />
-        </div>
-        <div className="inputDiv">
-          <label htmlFor="author">Author:</label>
-          <input
-            type="text"
-            name="author"
-            placeholder="Author"
-            id="author"
-            required
-          />
-        </div>
-        <div className="inputDiv">
-          <label htmlFor="url">URL:</label>
-          <input type="text" name="url" placeholder="URL" id="url" required />
-        </div>
-        <label>
-          <input id="checkbox-input" type="checkbox" name="checkbox" />
-          Do you love this blog?
-        </label>
-        <div>
-          <button type="submit">Save New Blog</button>
-        </div>
-      </form>
+      <Notification message={errorMessage} />
+      {!user && <LoginForm {...loginFormProps} />}
+      {user && (
+        <>
+          <span
+            style={{
+              color: 'greenyellow',
+              backgroundColor: 'black',
+              padding: '5px',
+            }}
+          >
+            {user.name}
+          </span>{' '}
+          is logged in.
+          <BlogList blogs={blogs} />
+          <SubmissionForm addBlog={addBlog} />
+        </>
+      )}
     </div>
   );
 };
