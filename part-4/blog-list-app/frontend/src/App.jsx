@@ -11,6 +11,12 @@ import './App.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+  const [newBlog, setNewBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
+    checkbox: false,
+  });
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +28,8 @@ const App = () => {
     if (savedLoggedInUser) {
       const user = JSON.parse(savedLoggedInUser);
       setUser(user);
+      // Set auth token for use in future blog creation.
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -33,17 +41,16 @@ const App = () => {
 
   const addBlog = (event) => {
     event.preventDefault();
-    // Grab title, author, URL from user submission.
-    const formData = new FormData(event.target);
+
+    const { url, checkbox } = newBlog;
 
     // We need to check, from the services file, to see if the blog is in the database already (by url). We do that so we can change the number of likes on the blog through a PUT endpoint if the user checked the checkbox indicating so. However, if the blog does not yet exist, we call the blog service to create a new blog.
     // Before we do the above, we must encode the URL via JS, to avoid issues with passing a URL's special characters like :/?&= (which have special meaning within the context of the URL structure) within the backend Express endpoint URL.
-    const url = formData.get('url');
     const encodedUrl = encodeURIComponent(url);
 
     blogService.checkExistenceOfBlog(encodedUrl).then((returnedId) => {
       if (returnedId) {
-        if (formData.get('checkbox') === 'on') {
+        if (checkbox) {
           blogService
             .updateLikesAndReturnUpdatedCollection(returnedId)
             .then((updatedBlogsList) => {
@@ -62,12 +69,9 @@ const App = () => {
           );
         }
       } else {
-        // Call the POST method, since the blog doesn't exist yet.
-        // Create formObject to send to API endpoint/route.
-        const formObject = Object.fromEntries(formData.entries());
-
-        // Update blogs list state to reflect new added blog
-        blogService.create(formObject).then((returnedBlog) => {
+        // Call the POST route, since the blog doesn't exist yet.
+        // Update blogs list state to reflect new added blog.
+        blogService.create(newBlog).then((returnedBlog) => {
           setBlogs(blogs.concat(returnedBlog));
         });
 
@@ -76,7 +80,12 @@ const App = () => {
     });
 
     // Clear form fields.
-    event.target.reset();
+    setNewBlog({
+      title: '',
+      author: '',
+      url: '',
+      checkbox: false,
+    });
   };
 
   const handleLogin = async (event) => {
@@ -88,6 +97,9 @@ const App = () => {
 
       // Save user data to local storage so it can persist even when the React app is reloaded, i.e., on page refresh.
       window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+      // Set auth token for use in future blog creation.
+      blogService.setToken(user.token);
 
       setUser(user);
       setUsername('');
@@ -119,6 +131,12 @@ const App = () => {
     handleLogin,
   };
 
+  const submissionFormProps = {
+    newBlog,
+    setNewBlog,
+    addBlog,
+  };
+
   return (
     <div>
       <h1>List of Random Users&apos; Favorite Blogs</h1>
@@ -140,7 +158,7 @@ const App = () => {
             <LogoutButton handleLogout={handleLogout} />
           </div>
           <BlogList blogs={blogs} />
-          <SubmissionForm addBlog={addBlog} />
+          <SubmissionForm {...submissionFormProps} />
         </>
       )}
     </div>

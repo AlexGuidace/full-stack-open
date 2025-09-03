@@ -34,15 +34,14 @@ blogsRouter.post(
   async (request, response) => {
     const body = request.body;
 
-    // Assign body a field of 'likes' and give body.likes a numerical value based on whether the "Do you love this blog?" checkbox was checked or not.
-    // NOTE: If a checkbox is checked, the value of the checkbox will be set to a string of "on" by the browser when the form is submitted (and will be part of request.body above). If the value is "on", then we have a boolean of true. If it's not checked, the checkbox has a value of null.
-    if (body.checkbox === 'on') {
+    // Assign body a field of 'likes' and give body.likes a numerical value based on whether the "Do you love this blog?" checkbox was checked or not (a boolean value for checkbox).
+    if (body.checkbox) {
       body.likes = 1;
     } else {
       body.likes = 0;
     }
 
-    // Get the correct user. Before we entered this route, request.user was assigned value through the middleware function: verifyAndGetUserFromRequest.
+    // Get the correct user. When we entered this route, request.user was assigned value through the middleware function: verifyAndGetUserFromRequest.
     const user = await User.findById(request.user.id);
 
     if (!user) {
