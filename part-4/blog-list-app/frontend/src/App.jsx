@@ -39,7 +39,7 @@ const App = () => {
     });
   }, []);
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault();
 
     const { url, checkbox } = newBlog;
@@ -48,44 +48,53 @@ const App = () => {
     // Before we do the above, we must encode the URL via JS, to avoid issues with passing a URL's special characters like :/?&= (which have special meaning within the context of the URL structure) within the backend Express endpoint URL.
     const encodedUrl = encodeURIComponent(url);
 
-    blogService.checkExistenceOfBlog(encodedUrl).then((returnedId) => {
-      if (returnedId) {
+    try {
+      const existingBlogId = await blogService.checkExistenceOfBlog(encodedUrl);
+
+      if (existingBlogId) {
         if (checkbox) {
-          blogService
-            .updateLikesAndReturnUpdatedCollection(returnedId)
-            .then((updatedBlogsList) => {
-              console.log(
-                `We were able to do the Likes update and get the updated list back: ${JSON.stringify(
-                  updatedBlogsList,
-                  null,
-                  2
-                )}`
-              );
-              setBlogs(updatedBlogsList);
-            });
+          const updatedBlogsList =
+            await blogService.updateLikesAndReturnUpdatedCollection(
+              existingBlogId
+            );
+
+          console.log(
+            `We were able to do the Likes update for this blog and get the updated list of blogs back: ${JSON.stringify(
+              updatedBlogsList,
+              null,
+              2
+            )}`
+          );
+
+          setBlogs(updatedBlogsList);
         } else {
           console.log(
-            'The checkbox was not checked, so no likes were added for this blog submission.'
+            'The blog exists in the DB already, and the checkbox was not checked, so no likes were added to the blog submitted.'
           );
         }
       } else {
         // Call the POST route, since the blog doesn't exist yet.
         // Update blogs list state to reflect new added blog.
-        blogService.create(newBlog).then((returnedBlog) => {
-          setBlogs(blogs.concat(returnedBlog));
-        });
+        const createdBlog = await blogService.create(newBlog);
+        setBlogs(blogs.concat(createdBlog));
 
         console.log('New blog created!');
       }
-    });
 
-    // Clear form fields.
-    setNewBlog({
-      title: '',
-      author: '',
-      url: '',
-      checkbox: false,
-    });
+      // Clear form fields.
+      setNewBlog({
+        title: '',
+        author: '',
+        url: '',
+        checkbox: false,
+      });
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('The blog was not created.');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
   };
 
   const handleLogin = async (event) => {
