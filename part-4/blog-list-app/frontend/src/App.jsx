@@ -34,9 +34,20 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    blogService.getAll().then((initialBlogs) => {
-      setBlogs(initialBlogs);
-    });
+    const getInitialBlogs = async () => {
+      try {
+        const initialBlogs = await blogService.getAll();
+        setBlogs(initialBlogs);
+      } catch (error) {
+        console.error(error);
+        setErrorMessage('There was an error getting all of the blogs.');
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      }
+    };
+
+    getInitialBlogs();
   }, []);
 
   const addBlog = async (event) => {
