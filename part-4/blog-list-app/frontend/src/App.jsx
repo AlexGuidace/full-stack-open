@@ -6,6 +6,7 @@ import Notification from './components/Notification';
 import BlogList from './components/BlogList';
 import SubmissionForm from './components/SubmissionForm';
 import LoginForm from './components/LoginForm';
+import LogoutButton from './components/LogoutButton';
 import './App.css';
 
 const App = () => {
@@ -14,6 +15,15 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  // Check to see if a logged-in user is saved to local storage. If they are, set up the React app to use their data.
+  useEffect(() => {
+    const savedLoggedInUser = window.localStorage.getItem('loggedInUser');
+    if (savedLoggedInUser) {
+      const user = JSON.parse(savedLoggedInUser);
+      setUser(user);
+    }
+  }, []);
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => {
@@ -75,6 +85,10 @@ const App = () => {
     try {
       // Log user in and get token, username, name back.
       const user = await loginService.login({ username, password });
+
+      // Save user data to local storage so it can persist even when the React app is reloaded, i.e., on page refresh.
+      window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+
       setUser(user);
       setUsername('');
       setPassword('');
@@ -87,6 +101,14 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+
+    window.localStorage.removeItem('loggedInUser');
+    setUser(null);
+    console.log('User successfully logged out.');
   };
 
   const loginFormProps = {
@@ -104,16 +126,19 @@ const App = () => {
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
         <>
-          <span
-            style={{
-              color: 'greenyellow',
-              backgroundColor: 'black',
-              padding: '5px',
-            }}
-          >
-            {user.name}
-          </span>{' '}
-          is logged in.
+          <div style={{ border: 'solid', padding: '10px', width: '231px' }}>
+            <span
+              style={{
+                color: 'greenyellow',
+                backgroundColor: 'black',
+                padding: '5px',
+              }}
+            >
+              {user.name}
+            </span>{' '}
+            <span style={{ marginRight: '5px' }}>is logged in.</span>
+            <LogoutButton handleLogout={handleLogout} />
+          </div>
           <BlogList blogs={blogs} />
           <SubmissionForm addBlog={addBlog} />
         </>
