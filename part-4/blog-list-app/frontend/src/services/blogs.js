@@ -12,14 +12,14 @@ const getAll = async () => {
   return response.data;
 };
 
-const create = (newBlog) => {
+const create = async (newBlog) => {
   // config is the Request Configuration settings we set in order to meet expectations set up at the endpoint on the backend.
   const config = {
     headers: { Authorization: authToken },
   };
 
-  const request = axios.post(baseUrl, newBlog, config);
-  return request.then((response) => response.data);
+  const response = await axios.post(baseUrl, newBlog, config);
+  return response.data;
 };
 
 const checkExistenceOfBlog = (encodedUrl) => {
