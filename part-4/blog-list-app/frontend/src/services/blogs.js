@@ -1,21 +1,21 @@
 import axios from 'axios';
 const baseUrl = '/api/blogs';
 
-let token = null;
+let authToken = null;
 
 const setToken = (newToken) => {
-  token = `Bearer ${newToken}`;
+  authToken = `Bearer ${newToken}`;
 };
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+const getAll = async () => {
+  const response = await axios.get(baseUrl);
+  return response.data;
 };
 
 const create = (newBlog) => {
   // config is the Request Configuration settings we set in order to meet expectations set up at the endpoint on the backend.
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: authToken },
   };
 
   const request = axios.post(baseUrl, newBlog, config);

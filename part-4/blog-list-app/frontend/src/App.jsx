@@ -101,7 +101,7 @@ const App = () => {
       });
     } catch (error) {
       console.error(error);
-      setErrorMessage('The blog was not created.');
+      setErrorMessage('The blog was not created nor updated.');
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
