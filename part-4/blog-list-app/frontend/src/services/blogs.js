@@ -22,9 +22,9 @@ const create = async (newBlog) => {
   return response.data;
 };
 
-const checkExistenceOfBlog = (encodedUrl) => {
-  const request = axios.get(`${baseUrl}/${encodedUrl}`);
-  return request.then((response) => response.data);
+const checkExistenceOfBlog = async (encodedUrl) => {
+  const response = await axios.get(`${baseUrl}/${encodedUrl}`);
+  return response.data;
 };
 
 const updateLikesAndReturnUpdatedCollection = (id) => {
