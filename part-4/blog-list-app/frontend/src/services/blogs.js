@@ -27,12 +27,12 @@ const checkExistenceOfBlog = async (encodedUrl) => {
   return response.data;
 };
 
-const updateLikesAndReturnUpdatedCollection = (id) => {
-  const updateRequest = axios.put(`${baseUrl}/${id}`);
-  return updateRequest.then(() => {
-    const getAllRequest = axios.get(baseUrl);
-    return getAllRequest.then((response) => response.data);
-  });
+const updateLikesAndReturnUpdatedCollection = async (id) => {
+  // Update Likes first.
+  await axios.put(`${baseUrl}/${id}`);
+  // Get all blogs and return them second.
+  const response = await axios.get(baseUrl);
+  return response.data;
 };
 
 export default {
