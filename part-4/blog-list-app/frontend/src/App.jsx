@@ -80,6 +80,9 @@ const App = () => {
           );
 
           setBlogs(updatedBlogsList);
+          setIsError(false);
+          setMessage(`Likes for '${url}' increased by 1.`);
+          setTimeout(() => setMessage(null), 5000);
         } else {
           console.log(
             'The blog exists in the DB already, and the checkbox was not checked, so no likes were added to the blog submitted.'
