@@ -17,7 +17,8 @@ const App = () => {
     url: '',
     checkbox: false,
   });
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [isError, setIsError] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -33,22 +34,23 @@ const App = () => {
     }
   }, []);
 
+  // Get blogs to display only if a user is logged in.
   useEffect(() => {
+    if (!user) return;
     const getInitialBlogs = async () => {
       try {
         const initialBlogs = await blogService.getAll();
         setBlogs(initialBlogs);
       } catch (error) {
         console.error(error);
-        setErrorMessage('There was an error getting all of the blogs.');
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
+        setIsError(true);
+        setMessage('There was an error getting all of the blogs.');
+        setTimeout(() => setMessage(null), 5000);
       }
     };
 
     getInitialBlogs();
-  }, []);
+  }, [user]);
 
   const addBlog = async (event) => {
     event.preventDefault();
@@ -101,9 +103,9 @@ const App = () => {
       });
     } catch (error) {
       console.error(error);
-      setErrorMessage('The blog was not created nor updated.');
+      setMessage('The blog was not created nor updated.');
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage(null);
       }, 5000);
     }
   };
@@ -128,9 +130,9 @@ const App = () => {
       console.log('Yippeeee... user logged in!');
       console.log('USER: ', user);
     } catch {
-      setErrorMessage('Incorrect credentials provided. Please try again.');
+      setMessage('Incorrect credentials provided. Please try again.');
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage(null);
       }, 5000);
     }
   };
@@ -140,6 +142,8 @@ const App = () => {
 
     window.localStorage.removeItem('loggedInUser');
     setUser(null);
+    // Removes notification is the user logs out and there is a notification that hasn't timed out yet.
+    setMessage(null);
     console.log('User successfully logged out.');
   };
 
@@ -160,7 +164,7 @@ const App = () => {
   return (
     <div>
       <h1>List of Random Users&apos; Favorite Blogs</h1>
-      <Notification message={errorMessage} />
+      <Notification isError={isError} message={message} />
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
         <>

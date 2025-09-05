@@ -40,8 +40,8 @@
    padding-bottom: 3px;
 }
 
-.error {
-   color: blue;
+.notification {
+   width: 400px;
    background: rgb(230, 230, 230);
    font-size: 20px;
    border-style: solid;

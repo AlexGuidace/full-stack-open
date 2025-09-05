@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null;
-  }
+const Notification = ({ isError, message }) => {
+  if (!message) return null;
 
-  return <div className="error">{message}</div>;
+  const fontColor = isError ? 'red' : 'green';
+
+  return (
+    <div className="notification" style={{ color: fontColor }}>
+      {message}
+    </div>
+  );
 };
 
 export default Notification;
