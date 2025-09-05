@@ -84,6 +84,12 @@ const App = () => {
           setMessage(`Likes for '${url}' increased by 1.`);
           setTimeout(() => setMessage(null), 5000);
         } else {
+          setIsError(true);
+          setMessage(
+            `Entry for '${url}' already exists, so a new one was not created.`
+          );
+          setTimeout(() => setMessage(null), 5000);
+
           console.log(
             'The blog exists in the DB already, and the checkbox was not checked, so no likes were added to the blog submitted.'
           );
