@@ -50,6 +50,18 @@
    margin-bottom: 20px;
  }
 
+ .notification.info {
+   color:blue
+ }
+
+ .notification.success {
+   color:green
+ }
+
+ .notification.error {
+   color:red
+ }
+
 h2 {
    margin-top: 0px;
 }

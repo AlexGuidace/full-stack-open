@@ -44,6 +44,7 @@ blogsRouter.post(
     // Get the correct user. When we entered this route, request.user was assigned value through the middleware function: verifyAndGetUserFromRequest.
     const user = await User.findById(request.user.id);
 
+    // If the user is not found (null), we have to handle it.
     if (!user) {
       return response
         .status(400)
