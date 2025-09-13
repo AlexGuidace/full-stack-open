@@ -184,7 +184,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>List of Random Users&apos; Favorite Blogs</h1>
+      <h1>List of Random Users&apos; Favorite Blogz</h1>
       <Notification message={message} messageType={messageType} />
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
