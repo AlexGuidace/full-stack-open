@@ -1,4 +1,4 @@
-#submissionForm {
+#blogSubmissionForm {
   display: flex;
   flex-direction: column;
   border: 1px black solid;
@@ -6,7 +6,7 @@
   padding: 1.5rem;
 }
 
-#submissionForm input:not([type="checkbox"]) {
+#blogSubmissionForm input:not([type="checkbox"]) {
   width: 700px;
 }
 

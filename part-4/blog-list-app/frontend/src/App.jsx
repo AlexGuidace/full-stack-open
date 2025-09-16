@@ -1,27 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
 import BlogList from './components/BlogList';
-import SubmissionForm from './components/SubmissionForm';
+import BlogSubmissionForm from './components/BlogSubmissionForm';
 import LoginForm from './components/LoginForm';
 import LogoutButton from './components/LogoutButton';
+import ContentToggler from './components/ContentToggler';
 import './App.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-    checkbox: false,
-  });
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  // Used for displaying/hiding wrapped content.
+  const contentTogglerRef = useRef();
 
   // Set info, success, or error notifications that time out, based on app actions.
   const showNotificationMessage = (msg, type = 'info') => {
@@ -60,10 +58,8 @@ const App = () => {
     getInitialBlogs();
   }, [user]);
 
-  const addBlog = async (event) => {
-    event.preventDefault();
-
-    const { url, checkbox } = newBlog;
+  const addBlog = async (blogObject) => {
+    const { url, checkbox } = blogObject;
 
     // We need to check, from the services file, to see if the blog is in the database already (by url). We do that so we can change the number of likes on the blog through a PUT endpoint if the user checked the checkbox indicating so. However, if the blog does not yet exist, we call the blog service to create a new blog.
     // Before we do the above, we must encode the URL via JS, to avoid issues with passing a URL's special characters like :/?&= (which have special meaning within the context of the URL structure) within the backend Express endpoint URL.
@@ -105,20 +101,15 @@ const App = () => {
       } else {
         // If we don't have an existing blog, call the POST route.
         // Update blogs list state to reflect new added blog.
-        const createdBlog = await blogService.create(newBlog);
+        const createdBlog = await blogService.create(blogObject);
         setBlogs(blogs.concat(createdBlog));
+
+        // Hide the submission form after the blog is created.
+        contentTogglerRef.current.toggleVisibility();
 
         showNotificationMessage(`New entry for '${url}' created!`, 'success');
         console.log('Success: New blog created!');
       }
-
-      // Clear form fields.
-      setNewBlog({
-        title: '',
-        author: '',
-        url: '',
-        checkbox: false,
-      });
     } catch (error) {
       showNotificationMessage(
         `The blog was not created nor updated: ${error}`,
@@ -161,12 +152,18 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault();
 
-    window.localStorage.removeItem('loggedInUsers');
+    window.localStorage.removeItem('loggedInUser');
     setUser(null);
 
     showNotificationMessage('User has been logged out successfully.', 'info');
     console.log('Info: User logged out.');
   };
+
+  const blogFormToggler = () => (
+    <ContentToggler buttonLabel="Create New Blog" ref={contentTogglerRef}>
+      <BlogSubmissionForm addBlog={addBlog} />
+    </ContentToggler>
+  );
 
   const loginFormProps = {
     username,
@@ -176,15 +173,9 @@ const App = () => {
     handleLogin,
   };
 
-  const submissionFormProps = {
-    newBlog,
-    setNewBlog,
-    addBlog,
-  };
-
   return (
     <div>
-      <h1>List of Random Users&apos; Favorite Blogs</h1>
+      <h1>User&apos;s Favorite Blogs</h1>
       <Notification message={message} messageType={messageType} />
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
@@ -203,7 +194,7 @@ const App = () => {
             <LogoutButton handleLogout={handleLogout} />
           </div>
           <BlogList blogs={blogs} />
-          <SubmissionForm {...submissionFormProps} />
+          {blogFormToggler()}
         </>
       )}
     </div>
