@@ -10,6 +10,29 @@
   width: 700px;
 }
 
+.blog {
+   display: flex;
+   flex-direction: column;
+   padding-left: 15px;
+   padding-top: 15px;
+   padding-bottom: 15px;
+   margin-bottom: 10px;
+   border: black solid;
+   border-radius: 5px;
+   max-width: 650px;
+}
+
+.blogDetails {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.blogDetails span {
+   font-weight: bold;
+   margin-right: 5px;
+}
+
 #loginForm {
   display: flex;
   flex-direction: column;
@@ -31,13 +54,6 @@
 
 .inputDiv {
    margin-bottom: 15px;
-}
-
-.blog {
-   display: flex;
-   flex-direction: column;
-   padding-top: 3px;
-   padding-bottom: 3px;
 }
 
 .notification {
