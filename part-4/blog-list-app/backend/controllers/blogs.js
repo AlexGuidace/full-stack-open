@@ -76,7 +76,7 @@ blogsRouter.put('/:id', async (request, response) => {
     id,
     { $inc: { likes: 1 } },
     { new: true }
-  );
+  ).populate('user', { username: 1, name: 1 });
 
   response.status(200).json(updatedBlog);
 });

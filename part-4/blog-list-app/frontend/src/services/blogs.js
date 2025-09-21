@@ -27,11 +27,8 @@ const checkExistenceOfBlog = async (encodedUrl) => {
   return response.data;
 };
 
-const updateLikesAndReturnUpdatedCollection = async (id) => {
-  // Update Likes first.
-  await axios.put(`${baseUrl}/${id}`);
-  // Get all blogs and return them second.
-  const response = await axios.get(baseUrl);
+const increaseBlogLikeCount = async (id) => {
+  const response = await axios.put(`${baseUrl}/${id}`);
   return response.data;
 };
 
@@ -40,5 +37,5 @@ export default {
   getAll,
   create,
   checkExistenceOfBlog,
-  updateLikesAndReturnUpdatedCollection,
+  increaseBlogLikeCount,
 };

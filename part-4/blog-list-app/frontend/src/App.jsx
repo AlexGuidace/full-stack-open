@@ -71,23 +71,14 @@ const App = () => {
       // If we have an existing blog, first check to see if the user wants to increase the number of likes on the blog.
       if (existingBlogId) {
         if (checkbox) {
-          const updatedBlogsList =
-            await blogService.updateLikesAndReturnUpdatedCollection(
-              existingBlogId
-            );
-
-          setBlogs(updatedBlogsList);
+          const updatedBlog = await updateBlogLikes(existingBlogId);
 
           showNotificationMessage(
-            `Likes for '${url}' increased by 1.`,
+            `Likes for '${updatedBlog.title}' increased by 1.`,
             'success'
           );
           console.log(
-            `Success: We were able to do the Likes update for this blog and get the updated list of blogs back: ${JSON.stringify(
-              updatedBlogsList,
-              null,
-              2
-            )}`
+            `Success: Likes for '${updatedBlog.title}' increased by 1.`
           );
         } else {
           showNotificationMessage(
@@ -117,6 +108,16 @@ const App = () => {
       );
       console.error('Error: ', error);
     }
+  };
+
+  const updateBlogLikes = async (blogId) => {
+    const updatedBlog = await blogService.increaseBlogLikeCount(blogId);
+
+    setBlogs((blogs) =>
+      blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+    );
+
+    return updatedBlog;
   };
 
   const handleLogin = async (event) => {
@@ -193,7 +194,11 @@ const App = () => {
             <span style={{ marginRight: '5px' }}>is logged in.</span>
             <LogoutButton handleLogout={handleLogout} />
           </div>
-          <BlogList blogs={blogs} />
+          <BlogList
+            blogs={blogs}
+            addLike={updateBlogLikes}
+            showNotificationMessage={showNotificationMessage}
+          />
           {blogFormToggler()}
         </>
       )}

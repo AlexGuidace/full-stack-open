@@ -1,5 +1,22 @@
 /* eslint-disable react/prop-types */
-const BlogDetails = ({ blog }) => {
+const BlogDetails = ({ blog, addLike, showNotificationMessage }) => {
+  const handleAddLike = async () => {
+    try {
+      const updatedBlog = await addLike(blog.id);
+      showNotificationMessage(
+        `Likes for '${updatedBlog.title}' increased by 1.`,
+        'success'
+      );
+      console.log(`Success: Likes for '${updatedBlog.title}' increased by 1.`);
+    } catch (error) {
+      showNotificationMessage(
+        `Blog Likes for '${blog.title}' were not updated: ${error}`,
+        'error'
+      );
+      console.error('Error: ', error);
+    }
+  };
+
   return (
     <div className="blogDetails">
       <h3 style={{ margin: '10px 0px 10px 0px' }}>-----Blog Details-----</h3>
@@ -11,7 +28,9 @@ const BlogDetails = ({ blog }) => {
       </div>
       <div>
         <span>Likes:</span> {blog.likes}
-        <button style={{ marginLeft: '10px' }}>Add Like</button>
+        <button onClick={handleAddLike} style={{ marginLeft: '10px' }}>
+          Add Like
+        </button>
       </div>
       <div>
         <span>Name:</span> {blog.user.name}

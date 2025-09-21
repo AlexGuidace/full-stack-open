@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import BlogDetails from './BlogDetails';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike, showNotificationMessage }) => {
   const [isContentVisible, setIsContentVisible] = useState(false);
 
   // When isContentVisible is true, change the details button text to 'Hide Details'.
@@ -25,7 +25,11 @@ const Blog = ({ blog }) => {
         by <span style={{ marginRight: '10px' }}>{blog.author}</span>
         <button onClick={toggleContentVisibility}>{detailsButtonText}</button>
         <div style={contentStyle}>
-          <BlogDetails blog={blog} />
+          <BlogDetails
+            blog={blog}
+            addLike={addLike}
+            showNotificationMessage={showNotificationMessage}
+          />
         </div>
       </div>
     </li>
