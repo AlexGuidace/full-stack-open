@@ -1,7 +1,13 @@
 import Blog from './Blog';
 
 /* eslint-disable react/prop-types */
-const BlogList = ({ blogs, addLike, showNotificationMessage }) => {
+const BlogList = ({
+  blogs,
+  addLike,
+  showNotificationMessage,
+  user,
+  deleteBlog,
+}) => {
   if (blogs.length === 0) return <h3>(No blogs in the bloglist yet)</h3>;
 
   return (
@@ -12,6 +18,8 @@ const BlogList = ({ blogs, addLike, showNotificationMessage }) => {
           blog={blog}
           addLike={addLike}
           showNotificationMessage={showNotificationMessage}
+          user={user}
+          deleteBlog={deleteBlog}
         />
       ))}
     </ul>

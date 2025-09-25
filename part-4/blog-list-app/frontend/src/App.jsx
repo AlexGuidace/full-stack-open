@@ -110,6 +110,19 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (blogId, blogTitle) => {
+    const isDeleteConfirmed = window.confirm(
+      `Are you sure you want to delete "${blogTitle}"?`
+    );
+
+    if (!isDeleteConfirmed) return false;
+
+    await blogService.deleteBlogFromDB(blogId);
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+    return true;
+  };
+
   const updateBlogLikes = async (blogId) => {
     const updatedBlog = await blogService.increaseBlogLikeCount(blogId);
 
@@ -176,7 +189,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>User&apos;s Favorite Blogs</h1>
+      <h1>Users&apos; Favorite Blogs</h1>
       <Notification message={message} messageType={messageType} />
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
@@ -198,6 +211,8 @@ const App = () => {
             blogs={blogs}
             addLike={updateBlogLikes}
             showNotificationMessage={showNotificationMessage}
+            user={user}
+            deleteBlog={deleteBlog}
           />
           {blogFormToggler()}
         </>

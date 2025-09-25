@@ -7,6 +7,7 @@ usersRouter.get('/', async (request, response) => {
   response.json(users);
 });
 
+// NOTE: Use REST Client 'create_user' test to create new users for this application for now.
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body;
 

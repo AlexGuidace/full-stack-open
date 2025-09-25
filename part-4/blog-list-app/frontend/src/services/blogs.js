@@ -34,10 +34,19 @@ const increaseBlogLikeCount = async (id) => {
   return response.data;
 };
 
+const deleteBlogFromDB = async (id) => {
+  const config = {
+    headers: { Authorization: authToken },
+  };
+
+  await axios.delete(`${baseUrl}/${id}`, config);
+};
+
 export default {
   setToken,
   getAll,
   create,
   checkExistenceOfBlog,
   increaseBlogLikeCount,
+  deleteBlogFromDB,
 };
