@@ -45,6 +45,16 @@
   width: 220px;
 }
 
+.userPanel {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   border: 1px solid grey;
+   border-radius: 5px;
+   padding: 9px;
+   background-color: lightblue;
+}
+
 #checkbox-input {
    width: auto;
    margin-right: 10px;

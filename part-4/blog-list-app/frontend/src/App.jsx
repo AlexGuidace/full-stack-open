@@ -6,8 +6,8 @@ import Notification from './components/Notification';
 import BlogList from './components/BlogList';
 import BlogSubmissionForm from './components/BlogSubmissionForm';
 import LoginForm from './components/LoginForm';
-import LogoutButton from './components/LogoutButton';
 import ContentToggler from './components/ContentToggler';
+import UserPanel from './components/UserPanel';
 import './App.css';
 
 const App = () => {
@@ -194,19 +194,7 @@ const App = () => {
       {!user && <LoginForm {...loginFormProps} />}
       {user && (
         <>
-          <div style={{ border: 'solid', padding: '10px', width: '231px' }}>
-            <span
-              style={{
-                color: 'greenyellow',
-                backgroundColor: 'black',
-                padding: '5px',
-              }}
-            >
-              {user.name}
-            </span>{' '}
-            <span style={{ marginRight: '5px' }}>is logged in.</span>
-            <LogoutButton handleLogout={handleLogout} />
-          </div>
+          <UserPanel user={user} handleLogout={handleLogout} />
           <BlogList
             blogs={blogs}
             addLike={updateBlogLikes}
