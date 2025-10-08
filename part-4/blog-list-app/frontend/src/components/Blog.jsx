@@ -41,7 +41,10 @@ const Blog = ({ blog, addLike, showNotificationMessage, user, deleteBlog }) => {
         by <span style={{ marginRight: '10px' }}>{blog.author}</span>
         <button onClick={toggleContentVisibility}>{detailsButtonText}</button>
         {user.username === blog.user.username && (
-          <button onClick={handleDeleteBlog} style={{ marginLeft: '5px' }}>
+          <button
+            onClick={handleDeleteBlog}
+            style={{ marginLeft: '5px', color: 'red' }}
+          >
             Delete
           </button>
         )}
