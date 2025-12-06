@@ -54,7 +54,7 @@ describe('Tests for the Blogs API:', () => {
       );
     });
   });
-  // test for github token
+
   describe('POST requests', () => {
     test('A new, valid blog can be added to the database via POST', async () => {
       const newBlog = {
